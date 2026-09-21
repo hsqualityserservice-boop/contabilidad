@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'NEXUS.OS — Business Suite',
-  description: 'Gestión de flota, reservas, facturación y documentos para tu negocio.',
+  title: 'H&S Quality Service — Gestión de flotas',
+  description: 'Gestión de flotas, documentación, mantenimiento y operaciones de H&S Quality Service.',
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
