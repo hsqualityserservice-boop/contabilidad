@@ -106,3 +106,15 @@ export const corporateDocument = pgTable('corporate_document', {
   expiresAt: timestamp('expires_at'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
 })
+
+// Brand Settings: Configuración de marca por usuario
+export const brandSettings = pgTable('brand_settings', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  userId: text('userId').notNull().unique(),
+  companyName: text('company_name').notNull().default('NEXUS.OS'),
+  logoUrl: text('logo_url'),
+  primaryColor: text('primary_color').notNull().default('#12243D'),
+  accentColor: text('accent_color').notNull().default('#20B8AE'),
+  surfaceColor: text('surface_color').notNull().default('#F5F7FA'),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+})

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { authClient } from '@/lib/auth-client'
+import { saveBrandSettings } from '@/app/actions/brand'
 import { FleetModule } from '@/components/fleet-module'
 import { BookingModule } from '@/components/booking-module'
 import { DocumentsModule } from '@/components/documents-module'
@@ -81,6 +82,7 @@ export default function Dashboard({ userName }: { userName?: string }) {
   const [helpOpen, setHelpOpen] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
+  const [brand, setBrand] = useState({ companyName: 'NEXUS.OS', logoUrl: null as string | null, primaryColor: '#12243D', accentColor: '#20B8AE', surfaceColor: '#F5F7FA' })
   const t = copy[lang]
 
   const currentTitle = t[section === 'dashboard' ? 'dashboard' : `${section}Title` as keyof typeof t] as string
@@ -88,7 +90,7 @@ export default function Dashboard({ userName }: { userName?: string }) {
   const action = (message: string) => { setNotice(message); window.setTimeout(() => setNotice(''), 2600) }
 
   return (
-    <div className="min-h-screen bg-[#f5f7fa] text-[#152238]">
+    <div className="min-h-screen text-[#152238]" style={{ backgroundColor: brand.surfaceColor, '--brand-primary': brand.primaryColor, '--brand-accent': brand.accentColor } as React.CSSProperties}>
       <aside className={`fixed inset-y-0 left-0 z-40 flex w-[248px] flex-col bg-[#12243d] px-4 py-5 text-white transition-transform duration-300 lg:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center gap-3 px-3 pb-8">
           <div className="flex size-10 items-center justify-center rounded-xl bg-[#20b8ae] shadow-lg shadow-[#20b8ae]/20"><Sparkles className="size-5" /></div>
@@ -109,7 +111,7 @@ export default function Dashboard({ userName }: { userName?: string }) {
         </header>
         <main className="mx-auto max-w-[1480px] p-5 sm:p-8">
           <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="mb-1 text-sm font-medium text-[#16aaa2]">Viernes, 20 de septiembre de 2026</p><h1 className="text-2xl font-bold tracking-tight sm:text-[28px]">{section === 'dashboard' ? t.greeting : currentTitle}</h1><p className="mt-1 text-sm text-slate-500">{section === 'dashboard' ? t.subtitle : t[`${section}Sub` as keyof typeof t] as string}</p></div><button onClick={() => action(section === 'planning' ? t.newBooking : t.newRecord)} className="inline-flex w-fit items-center gap-2 rounded-xl bg-[#12243d] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#12243d]/10 transition hover:bg-[#1b3455]"><Plus className="size-4" />{section === 'planning' ? t.newBooking : section === 'fleet' ? t.addCar : section === 'billing' ? t.createInvoice : section === 'documents' ? t.upload : t.newRecord}</button></div>
-          {section === 'dashboard' ? <DashboardOverview t={t} action={action} onNavigate={setSection} /> : section === 'fleet' ? <FleetModule t={t} /> : section === 'planning' ? <BookingModule t={t} /> : section === 'operations' ? <OperationsHub t={t} onNotice={action} /> : section === 'billing' ? <Billing t={t} action={action} /> : section === 'documents' ? <DocumentsModule t={t} /> : <SettingsModule t={t} logo={logo} onLogoChange={setLogo} action={action} />}
+          {section === 'dashboard' ? <DashboardOverview t={t} action={action} onNavigate={setSection} /> : section === 'fleet' ? <FleetModule t={t} /> : section === 'planning' ? <BookingModule t={t} /> : section === 'operations' ? <OperationsHub t={t} onNotice={action} /> : section === 'billing' ? <Billing t={t} action={action} /> : section === 'documents' ? <DocumentsModule t={t} /> : <SettingsModule t={t} logo={logo} onLogoChange={(value) => { setLogo(value); setBrand((current) => ({ ...current, logoUrl: value })) }} brand={brand} onBrandChange={setBrand} action={action} />}
         </main>
       </div>
       {helpOpen && <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#12243d]/40 p-4" role="dialog" aria-modal="true" aria-labelledby="help-title"><div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"><div className="flex items-start justify-between"><div><h2 id="help-title" className="text-lg font-bold text-[#152238]">Centro de ayuda</h2><p className="mt-1 text-sm text-slate-500">Estamos aquí para ayudarte con NEXUS.OS.</p></div><button onClick={() => setHelpOpen(false)} aria-label="Cerrar centro de ayuda" className="rounded-lg p-2 text-slate-400 hover:bg-slate-50"><X className="size-4" /></button></div><div className="mt-5 flex flex-col gap-3"><a href="mailto:soporte@nexus-os.com?subject=Ayuda%20con%20NEXUS.OS" className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-[#152238] hover:border-[#20b8ae]">Escribir al soporte<span className="mt-1 block text-xs font-normal text-slate-500">soporte@nexus-os.com</span></a><a href="mailto:soporte@nexus-os.com?subject=Acceso%20a%20mi%20cuenta" className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-[#152238] hover:border-[#20b8ae]">Problemas de acceso<span className="mt-1 block text-xs font-normal text-slate-500">Solicita ayuda para recuperar tu acceso por email.</span></a></div></div></div>}
@@ -134,8 +136,12 @@ function Billing({ t, action }: { t: any; action: (m: string) => void }) { retur
 
 function Documents({ t, action }: { t: any; action: (m: string) => void }) { return <div className="flex flex-col gap-6"><div className="rounded-2xl border border-dashed border-[#9ddbd6] bg-[#effaf9] p-8 text-center"><div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-white text-[#16aaa2] shadow-sm"><FileText /></div><h2 className="mt-4 text-lg font-bold">{t.upload}</h2><p className="mx-auto mt-1 max-w-md text-sm text-slate-500">Captura tickets con la cámara de tu móvil o sube PDFs de facturas y estados de cuenta.</p><button onClick={() => action(t.upload)} className="mt-5 rounded-xl bg-[#12243d] px-4 py-2.5 text-sm font-semibold text-white">{t.upload}</button></div><Card title={t.recentDocs}><div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">{[['Ticket gasolina · 4821 KPF', 'PDF · 248 KB', 'Hoy'], ['Factura taller · MZR-7159', 'PDF · 1,2 MB', 'Ayer'], ['Estado de cuenta · Septiembre', 'PDF · 840 KB', '18 sep'], ['Recibo cliente · FAC-0125', 'PDF · 320 KB', '17 sep'], ['Seguro · Corolla Hybrid', 'PDF · 2,1 MB', '14 sep'], ['Contrato · Sala Panorama', 'PDF · 560 KB', '12 sep']].map((doc) => <button key={doc[0]} onClick={() => action('Documento abierto')} className="flex items-center gap-3 rounded-xl border border-slate-100 p-3 text-left transition hover:border-[#9ddbd6] hover:bg-[#f7fcfc]"><div className="flex size-10 items-center justify-center rounded-lg bg-rose-50 text-rose-500"><FileText className="size-5" /></div><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{doc[0]}</p><p className="text-[11px] text-slate-400">{doc[1]} · {doc[2]}</p></div><ChevronDown className="size-4 -rotate-90 text-slate-300" /></button>)}</div></Card></div> }
 
-function SettingsModule({ t, logo, onLogoChange, action }: { t: any; logo: string | null; onLogoChange: (value: string | null) => void; action: (message: string) => void }) {
+function SettingsModule({ t, logo, onLogoChange, brand, onBrandChange, action }: { t: any; logo: string | null; onLogoChange: (value: string | null) => void; brand: { companyName: string; logoUrl: string | null; primaryColor: string; accentColor: string; surfaceColor: string }; onBrandChange: (value: typeof brand) => void; action: (message: string) => void }) {
   const [amount, setAmount] = useState('')
+  const [companyName, setCompanyName] = useState(brand.companyName)
+  const [primaryColor, setPrimaryColor] = useState(brand.primaryColor)
+  const [accentColor, setAccentColor] = useState(brand.accentColor)
+  const [surfaceColor, setSurfaceColor] = useState(brand.surfaceColor)
   const [category, setCategory] = useState('Combustible')
   const categories = ['Combustible', 'Mantenimiento', 'Personal', 'Alquiler', 'Otros']
 
@@ -161,7 +167,23 @@ function SettingsModule({ t, logo, onLogoChange, action }: { t: any; logo: strin
     setAmount('')
   }
 
+  const updateBrand = async () => {
+    const nextBrand = { companyName: companyName.trim() || 'NEXUS.OS', logoUrl: logo, primaryColor, accentColor, surfaceColor }
+    onBrandChange(nextBrand)
+    await saveBrandSettings(nextBrand)
+    action('Identidad corporativa guardada para todos los usuarios')
+  }
+
   return <div className="grid gap-6 xl:grid-cols-[1fr_1.2fr]">
+    <Card title="Identidad corporativa">
+      <div className="flex flex-col gap-4">
+        <label className="flex flex-col gap-2 text-xs font-semibold text-slate-600">Nombre de empresa<input value={companyName} onChange={(event) => setCompanyName(event.target.value)} className="rounded-xl border border-slate-200 px-3 py-3 text-sm outline-none focus:border-[#16aaa2]" /></label>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {[[primaryColor, setPrimaryColor, 'Primario'], [accentColor, setAccentColor, 'Acento'], [surfaceColor, setSurfaceColor, 'Superficie']].map(([value, setter, label]) => <label key={label as string} className="flex flex-col gap-2 text-xs font-semibold text-slate-600">{label as string}<div className="flex items-center gap-2 rounded-xl border border-slate-200 p-2"><input type="color" value={value as string} onChange={(event) => (setter as (value: string) => void)(event.target.value)} className="size-8 cursor-pointer rounded-lg border-0 bg-transparent" /><span className="font-mono text-xs text-slate-500">{value as string}</span></div></label>)}
+        </div>
+        <button type="button" onClick={updateBrand} className="w-fit rounded-xl bg-[#20b8ae] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#169b93]">Guardar cambios en tiempo real</button>
+      </div>
+    </Card>
     <Card title={t.logo}>
       <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed border-slate-200 p-6 text-center">
         <div className="flex size-24 items-center justify-center overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 text-2xl font-bold text-[#16aaa2]">
