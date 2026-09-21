@@ -93,8 +93,8 @@ export default function Dashboard({ userName }: { userName?: string }) {
     <div className="min-h-screen text-[#152238]" style={{ backgroundColor: brand.surfaceColor, '--brand-primary': brand.primaryColor, '--brand-accent': brand.accentColor } as React.CSSProperties}>
       <aside className={`fixed inset-y-0 left-0 z-40 flex w-[248px] flex-col bg-orange-700 px-4 py-5 text-white transition-transform duration-300 lg:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center gap-3 px-3 pb-8">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-[#f97316] shadow-lg shadow-[#f97316]/20"><Sparkles className="size-5" /></div>
-          <div><p className="text-[17px] font-bold tracking-tight">NEXUS<span className="text-[#f97316]">.OS</span></p><p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">Business suite</p></div>
+          <div className="flex size-10 items-center justify-center rounded-xl bg-white text-[#ea580c] shadow-lg shadow-black/10"><Sparkles className="size-5" /></div>
+          <div><p className="text-[17px] font-bold tracking-tight text-white">NEXUS<span className="text-[#fed7aa]">.OS</span></p><p className="text-[10px] uppercase tracking-[0.18em] text-orange-100">Business suite</p></div>
         </div>
         <div className="flex flex-col gap-7">
           <div><p className="px-3 pb-2 text-[10px] font-semibold tracking-[0.18em] text-slate-500">{t.operations}</p><nav className="flex flex-col gap-1">{navItems.slice(0,3).map(({ id, icon: Icon, key }) => <NavItem key={id} active={section === id} icon={<Icon />} label={t[key]} onClick={() => { setSection(id); setMobileOpen(false) }} />)}</nav></div>
@@ -163,7 +163,7 @@ function SettingsModule({ t, logo, onLogoChange, brand, onBrandChange, action }:
       action('Introduce un importe válido')
       return
     }
-    action(`${t.saved}: ${Number(amount).toFixed(2)} € · ${category}`)
+    action(`${t.saved}: ${Number(amount).toFixed(2)} € �� ${category}`)
     setAmount('')
   }
 
