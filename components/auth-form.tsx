@@ -3,7 +3,7 @@
 import { FormEvent, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, Sparkles } from 'lucide-react'
+import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react'
 import { authClient } from '@/lib/auth-client'
 
 export default function AuthForm({ mode = 'sign-in' }: { mode?: 'sign-in' | 'sign-up' }) {
@@ -31,7 +31,7 @@ export default function AuthForm({ mode = 'sign-in' }: { mode?: 'sign-in' | 'sig
   }
 
   return <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-900/5 sm:p-10">
-    <div className="mb-8 flex items-center gap-3"><div className="flex size-11 items-center justify-center rounded-xl bg-[#ea580c] text-white shadow-lg shadow-orange-600/20"><Sparkles className="size-5" /></div><div><p className="text-lg font-bold tracking-tight text-[#152238]">NEXUS<span className="text-[#ea580c]">.OS</span></p><p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">Business suite</p></div></div>
+    <div className="mb-8 flex items-center gap-3"><img src="/images/hs-quality-service-logo.jpg" alt="HS Quality Service" className="size-14 rounded-full object-cover" /><div><p className="text-lg font-bold tracking-tight text-[#152238]">HS <span className="text-[#f4513d]">QUALITY SERVICE</span></p><p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">Gestión empresarial</p></div></div>
     <div className="mb-7"><h1 className="text-2xl font-bold tracking-tight text-[#152238]">{mode === 'sign-up' ? 'Crea tu cuenta' : 'Bienvenido de nuevo'}</h1><p className="mt-2 text-sm text-slate-500">{mode === 'sign-up' ? 'Empieza a gestionar tu negocio con NEXUS.OS.' : 'Accede a tu panel de gestión empresarial.'}</p></div>
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <label className="flex flex-col gap-2 text-sm font-semibold text-slate-700">Email<div className="relative"><Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" /><input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm outline-none transition focus:border-[#ea580c] focus:ring-2 focus:ring-[#ea580c]/15" placeholder="tu@email.com" /></div></label>
