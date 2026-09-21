@@ -28,7 +28,6 @@ import {
   Search,
   Settings,
   ShieldAlert,
-  Sparkles,
   Users,
   Wrench,
   X,
@@ -82,7 +81,7 @@ export default function Dashboard({ userName }: { userName?: string }) {
   const [helpOpen, setHelpOpen] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
-  const [brand, setBrand] = useState({ companyName: 'NEXUS.OS', logoUrl: null as string | null, primaryColor: '#c2410c', accentColor: '#f97316', surfaceColor: '#fffaf5' })
+  const [brand, setBrand] = useState({ companyName: 'HS Quality Service', logoUrl: '/images/hs-quality-service-logo.jpg', primaryColor: '#f4513d', accentColor: '#ffffff', surfaceColor: '#fffaf5' })
   const t = copy[lang]
 
   const currentTitle = t[section === 'dashboard' ? 'dashboard' : `${section}Title` as keyof typeof t] as string
@@ -93,8 +92,8 @@ export default function Dashboard({ userName }: { userName?: string }) {
     <div className="min-h-screen text-[#152238]" style={{ backgroundColor: brand.surfaceColor, '--brand-primary': brand.primaryColor, '--brand-accent': brand.accentColor } as React.CSSProperties}>
       <aside className={`fixed inset-y-0 left-0 z-40 flex w-[248px] flex-col bg-orange-700 px-4 py-5 text-white transition-transform duration-300 lg:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center gap-3 px-3 pb-8">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-[#f97316] shadow-lg shadow-[#f97316]/20"><Sparkles className="size-5" /></div>
-          <div><p className="text-[17px] font-bold tracking-tight">NEXUS<span className="text-[#f97316]">.OS</span></p><p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">Business suite</p></div>
+          <img src="/images/hs-quality-service-logo.jpg" alt="HS Quality Service" className="size-11 rounded-full border-2 border-white/80 object-cover shadow-lg shadow-black/10" />
+          <div><p className="text-[15px] font-bold tracking-tight text-white">HS <span className="text-white">QUALITY SERVICE</span></p><p className="text-[10px] uppercase tracking-[0.18em] text-orange-100">Gestión empresarial</p></div>
         </div>
         <div className="flex flex-col gap-7">
           <div><p className="px-3 pb-2 text-[10px] font-semibold tracking-[0.18em] text-slate-500">{t.operations}</p><nav className="flex flex-col gap-1">{navItems.slice(0,3).map(({ id, icon: Icon, key }) => <NavItem key={id} active={section === id} icon={<Icon />} label={t[key]} onClick={() => { setSection(id); setMobileOpen(false) }} />)}</nav></div>
@@ -106,7 +105,7 @@ export default function Dashboard({ userName }: { userName?: string }) {
       {mobileOpen && <button aria-label="Cerrar menú" className="fixed inset-0 z-30 bg-orange-700/40 lg:hidden" onClick={() => setMobileOpen(false)} />}
       <div className="lg:pl-[248px]">
         <header className="sticky top-0 z-20 flex h-[76px] items-center justify-between border-b border-[#e5eaf0] bg-[#f5f7fa]/90 px-5 backdrop-blur-md sm:px-8">
-          <div className="flex items-center gap-3"><button className="rounded-lg p-2 hover:bg-white lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Abrir menú"><Menu /></button><div className="hidden items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm text-slate-400 shadow-sm md:flex"><Search className="size-4" /><span>{t.search}...</span><kbd className="ml-6 rounded border border-slate-200 px-1.5 text-[10px]">⌘ K</kbd></div><p className="text-sm font-medium text-slate-500 md:hidden">NEXUS<span className="text-[#ea580c]">.OS</span></p></div>
+          <div className="flex items-center gap-3"><button className="rounded-lg p-2 hover:bg-white lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Abrir menú"><Menu /></button><div className="hidden items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm text-slate-400 shadow-sm md:flex"><Search className="size-4" /><span>{t.search}...</span><kbd className="ml-6 rounded border border-slate-200 px-1.5 text-[10px]">⌘ K</kbd></div><p className="text-sm font-bold text-[#f4513d] md:hidden">HS QUALITY SERVICE</p></div>
           <div className="flex items-center gap-2 sm:gap-4"><div className="relative"><button onClick={() => setLangOpen(!langOpen)} className="flex items-center gap-2 rounded-lg border border-[#e1e7ee] bg-white px-2.5 py-2 text-xs font-semibold shadow-sm sm:px-3"><Globe2 className="size-4 text-[#ea580c]" />{lang}<ChevronDown className="size-3.5 text-slate-400" /></button>{langOpen && <div className="absolute right-0 top-11 z-50 w-28 rounded-xl border border-slate-100 bg-white p-1.5 text-sm shadow-xl">{(['ES','FR','EN'] as Lang[]).map((item) => <button key={item} className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left hover:bg-slate-50 ${lang === item ? 'font-bold text-[#ea580c]' : ''}`} onClick={() => { setLang(item); setLangOpen(false) }}>{item}<span className="text-xs text-slate-400">{item === 'ES' ? 'Español' : item === 'FR' ? 'Français' : 'English'}</span></button>)}</div>}</div><div className="relative"><button onClick={() => setNotificationsOpen(!notificationsOpen)} className="relative rounded-lg p-2.5 hover:bg-white" aria-label="Notificaciones" aria-expanded={notificationsOpen}><Bell className="size-[19px] text-slate-500" /><span className="absolute right-2 top-2 size-1.5 rounded-full bg-[#f59e0b]" /></button>{notificationsOpen && <div className="absolute right-0 top-12 z-50 w-72 rounded-2xl border border-slate-100 bg-white p-4 text-slate-700 shadow-xl"><p className="text-sm font-bold">Notificaciones</p><p className="mt-3 rounded-xl bg-amber-50 p-3 text-xs text-amber-700">Hay 2 seguros próximos a vencer.</p><button onClick={() => { setNotificationsOpen(false); setSection('fleet') }} className="mt-3 text-xs font-semibold text-[#ea580c] hover:underline">Revisar flota</button></div>}</div><div className="relative border-l border-slate-200 pl-2 sm:pl-4"><button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-2 rounded-xl p-1 hover:bg-white" aria-label="Abrir menú de usuario" aria-expanded={profileOpen}><div className="flex size-9 items-center justify-center rounded-full bg-[#d9f1ee] text-xs font-bold text-[#168b84]">CG</div><div className="hidden text-left leading-tight sm:block"><p className="text-sm font-semibold">Carlos García</p><p className="text-[11px] text-slate-400">Administrador</p></div><ChevronDown className="hidden size-4 text-slate-400 sm:block" /></button>{profileOpen && <div className="absolute right-0 top-12 z-50 w-48 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl"><button onClick={() => { setProfileOpen(false); setSection('settings') }} className="w-full rounded-lg px-3 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50">Configuración</button><button onClick={async () => { await authClient.signOut(); window.location.href = '/sign-in' }} className="w-full rounded-lg px-3 py-2 text-left text-xs font-semibold text-rose-600 hover:bg-rose-50">Cerrar sesión</button></div>}</div></div>
         </header>
         <main className="mx-auto max-w-[1480px] p-5 sm:p-8">
@@ -163,7 +162,7 @@ function SettingsModule({ t, logo, onLogoChange, brand, onBrandChange, action }:
       action('Introduce un importe válido')
       return
     }
-    action(`${t.saved}: ${Number(amount).toFixed(2)} € · ${category}`)
+    action(`${t.saved}: ${Number(amount).toFixed(2)} € �� ${category}`)
     setAmount('')
   }
 
