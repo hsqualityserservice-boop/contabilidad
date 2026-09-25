@@ -108,6 +108,15 @@ export const corporateDocument = pgTable('corporate_document', {
 })
 
 // Brand Settings: Configuración de marca por usuario
+export const personnel = pgTable('personnel', {
+  id: text('id').primaryKey(),
+  ownerId: text('owner_id').notNull(),
+  email: text('email').notNull(),
+  accessCode: text('access_code').notNull().unique(),
+  status: text('status').notNull().default('active'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+})
+
 export const brandSettings = pgTable('brand_settings', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
   userId: text('userId').notNull().unique(),
