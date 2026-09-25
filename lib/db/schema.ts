@@ -111,7 +111,7 @@ export const corporateDocument = pgTable('corporate_document', {
 export const brandSettings = pgTable('brand_settings', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
   userId: text('userId').notNull().unique(),
-  companyName: text('company_name').notNull().default('NEXUS.OS'),
+  companyName: text('company_name').notNull().default('H&S Quality Service'),
   logoUrl: text('logo_url'),
   primaryColor: text('primary_color').notNull().default('#12243D'),
   accentColor: text('accent_color').notNull().default('#20B8AE'),
