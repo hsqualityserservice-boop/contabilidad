@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { CalendarDays, Camera, CheckCircle2, ChevronDown, Clock3, FileText, Globe2, Mail, MapPin, Plus, Search, ShieldCheck, UserRound, Users, X } from 'lucide-react'
-import { languageNames, languages, type Lang } from '@/lib/i18n'
+import { globalCopy, languageNames, languages, type Lang } from '@/lib/i18n'
 
 type AdminTab = 'staff' | 'planning' | 'clients'
 
@@ -72,7 +72,8 @@ export default function AdminDashboard({ userName, userEmail }: { userName?: str
   const [notice, setNotice] = useState('')
   const t = useMemo(() => copy[lang], [lang])
   const notify = (message: string) => { setNotice(message); window.setTimeout(() => setNotice(''), 2800) }
-  const tabs = [{ id: 'staff' as const, label: t.staff, icon: Users }, { id: 'planning' as const, label: t.planning, icon: CalendarDays }, { id: 'clients' as const, label: t.clients, icon: FileText }]
+  const globalLabels = globalCopy[lang]
+  const tabs = [{ id: 'staff' as const, label: globalLabels.staffManagement, icon: Users }, { id: 'planning' as const, label: globalLabels.fieldPlanning, icon: CalendarDays }, { id: 'clients' as const, label: globalLabels.qrInvoicesQuotes, icon: FileText }]
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
