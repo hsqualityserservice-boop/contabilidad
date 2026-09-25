@@ -31,6 +31,20 @@ export const verification = pgTable('verification', {
 
 export const dashboardProfile = pgTable('dashboard_profile', { id: integer('id').primaryKey().generatedAlwaysAsIdentity(), userId: text('userId').notNull(), locale: text('locale').notNull().default('ES') })
 
+export const customerProfile = pgTable('customer_profile', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().unique(),
+  customerType: text('customer_type').notNull(),
+  firstName: text('first_name'),
+  lastName: text('last_name'),
+  phone: text('phone'),
+  address: text('address'),
+  companyName: text('company_name'),
+  taxAddress: text('tax_address'),
+  vatNumber: text('vat_number'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+})
+
 export const dashboardCar = pgTable('dashboard_car', { id: text('id').primaryKey(), userId: text('userId').notNull(), plate: text('plate').notNull(), model: text('model').notNull(), status: text('status').notNull().default('available'), odometer: integer('odometer').notNull().default(0), imageUrl: text('image_url'), createdAt: timestamp('created_at').notNull().defaultNow() })
 export const dashboardFuel = pgTable('dashboard_fuel', { id: text('id').primaryKey(), userId: text('userId').notNull(), carId: text('car_id').notNull(), date: timestamp('date').notNull(), cost: text('cost').notNull(), liters: text('liters').notNull(), odometer: integer('odometer').notNull() })
 export const dashboardBooking = pgTable('dashboard_booking', { id: text('id').primaryKey(), userId: text('userId').notNull(), room: text('room').notNull(), customer: text('customer').notNull(), startsAt: timestamp('starts_at').notNull(), endsAt: timestamp('ends_at').notNull(), price: text('price').notNull(), paid: text('paid').notNull().default('0'), surcharge: text('surcharge').notNull().default('0') })
