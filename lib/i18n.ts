@@ -2,6 +2,22 @@ export type Lang = 'ES' | 'FR' | 'EN'
 
 export const languages: Lang[] = ['FR', 'ES', 'EN']
 
+export type GlobalCopy = {
+  inbox: string
+  notifications: string
+  presenceAlert: string
+  aiAssistantMessage: string
+  staffManagement: string
+  fieldPlanning: string
+  qrInvoicesQuotes: string
+}
+
+export const globalCopy = {
+  FR: { inbox: 'Boîte de réception', notifications: 'Notifications', presenceAlert: 'Rappel 24h avant l’intervention: Veuillez confirmer votre présence.', aiAssistantMessage: 'Message de l’Assistant IA', staffManagement: 'Gestion du Personnel', fieldPlanning: 'Planning terrain', qrInvoicesQuotes: 'Factures QR & Devis' },
+  ES: { inbox: 'Bandeja de entrada', notifications: 'Notificaciones', presenceAlert: 'Recordatorio 24h antes de la intervención: Por favor, confirme su asistencia.', aiAssistantMessage: 'Mensaje del Asistente de IA', staffManagement: 'Gestión del Personal', fieldPlanning: 'Planificación de campo', qrInvoicesQuotes: 'Facturas QR y Presupuestos' },
+  EN: { inbox: 'Inbox', notifications: 'Notifications', presenceAlert: '24h reminder before intervention: Please confirm your presence.', aiAssistantMessage: 'AI Assistant message', staffManagement: 'Staff Management', fieldPlanning: 'Field Planning', qrInvoicesQuotes: 'QR Invoices & Quotes' },
+} satisfies Record<Lang, GlobalCopy>
+
 export type ClientCopy = {
   client: string
   clientTitle: string
