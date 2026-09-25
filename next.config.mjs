@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async redirects() {
+  async headers() {
     return [
       {
-        source: '/',
-        destination: '/sign-in',
-        permanent: false,
+        source: '/(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store, max-age=0' },
+          { key: 'Pragma', value: 'no-cache' },
+        ],
       },
     ]
   },
