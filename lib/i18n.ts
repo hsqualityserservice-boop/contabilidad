@@ -1,0 +1,56 @@
+export type Lang = 'ES' | 'FR' | 'EN'
+
+export const languages: Lang[] = ['FR', 'ES', 'EN']
+
+export type ClientCopy = {
+  client: string
+  clientTitle: string
+  clientSub: string
+  interventionDetails: string
+  interventionPlaceholder: string
+  preferredSchedule: string
+  chooseDay: string
+  chooseSlot: string
+  morning: string
+  afternoon: string
+  presenceReminder: string
+  payment: string
+  invoiceDetails: string
+  vat: string
+  insurance: string
+  total: string
+  requestQuote: string
+  requestSent: string
+  assistantTitle: string
+  assistantPlaceholder: string
+  assistantSend: string
+}
+
+export const copy = {
+  ES: {
+    client: 'Espacio cliente', clientTitle: 'Solicitar una intervención', clientSub: 'Describe tu necesidad y elige cuándo prefieres que acudamos.', interventionDetails: 'Detalles de la intervención', interventionPlaceholder: 'Describe el trabajo de limpieza que necesitas…', preferredSchedule: 'Calendario y horario preferido', chooseDay: 'Elige un día', chooseSlot: 'Elige una franja horaria', morning: 'Mañana · 08:00–12:00', afternoon: 'Tarde · 13:00–17:00', presenceReminder: 'Confirma tu presencia 24 h antes', payment: 'Proceder al pago', invoiceDetails: 'Detalles de la factura', vat: 'IVA suizo 8,1 %', insurance: 'Garantía Baloise: 5.000.000 CHF', total: 'Total estimado', requestQuote: 'Solicitar presupuesto', requestSent: 'Solicitud preparada', assistantTitle: 'Asistente de limpieza', assistantPlaceholder: 'Pide una propuesta de limpieza…', assistantSend: 'Generar propuesta',
+  },
+  FR: {
+    client: 'Espace client', clientTitle: 'Demander une intervention', clientSub: 'Décrivez votre besoin et choisissez le moment qui vous convient.', interventionDetails: "Détails de l'intervention", interventionPlaceholder: 'Décrivez le travail de nettoyage souhaité…', preferredSchedule: 'Calendrier et Horaire Préféré', chooseDay: 'Choisir un jour', chooseSlot: 'Choisir une plage horaire', morning: 'Matin · 08:00–12:00', afternoon: 'Après-midi · 13:00–17:00', presenceReminder: 'Confirmer la présence 24h avant', payment: 'Procéder al paiement', invoiceDetails: 'Détails de la facture', vat: 'TVA suisse de 8,1 %', insurance: 'Garantie Baloise : 5\'000\'000 CHF', total: 'Total estimé', requestQuote: 'Demander un devis', requestSent: 'Demande préparée', assistantTitle: 'Assistant de nettoyage', assistantPlaceholder: 'Demandez une proposition de nettoyage…', assistantSend: 'Générer la proposition',
+  },
+  EN: {
+    client: 'Client space', clientTitle: 'Request a service', clientSub: 'Describe your needs and choose your preferred time.', interventionDetails: 'Service details', interventionPlaceholder: 'Describe the cleaning work you need…', preferredSchedule: 'Preferred calendar and schedule', chooseDay: 'Choose a day', chooseSlot: 'Choose a time slot', morning: 'Morning · 08:00–12:00', afternoon: 'Afternoon · 13:00–17:00', presenceReminder: 'Confirm presence 24 hours before', payment: 'Proceed to payment', invoiceDetails: 'Invoice details', vat: 'Swiss VAT 8.1%', insurance: 'Baloise guarantee: CHF 5,000,000', total: 'Estimated total', requestQuote: 'Request a quote', requestSent: 'Request prepared', assistantTitle: 'Cleaning assistant', assistantPlaceholder: 'Ask for a cleaning proposal…', assistantSend: 'Generate proposal',
+  },
+} satisfies Record<Lang, ClientCopy>
+
+export function getClientCopy(lang: Lang) {
+  return copy[lang]
+}
+
+export const languageNames: Record<Lang, string> = { FR: 'Français', ES: 'Español', EN: 'English' }
+
+export function languageInstruction(lang: Lang) {
+  return lang === 'FR' ? 'Réponds uniquement en français. Les propositions et descriptions de nettoyage doivent être exclusivement en français. N’utilise jamais l’espagnol.' : lang === 'EN' ? 'Respond only in English. Cleaning proposals and descriptions must be exclusively in English.' : 'Responde únicamente en español. Las propuestas y descripciones de limpieza deben estar exclusivamente en español.'
+}
+
+export function isLang(value: unknown): value is Lang {
+  return value === 'FR' || value === 'ES' || value === 'EN'
+}
+
+export default copy
+
