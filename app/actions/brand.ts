@@ -15,12 +15,12 @@ async function getUserId() {
 export async function getBrandSettings() {
   const userId = await getUserId()
   const rows = await db.select().from(brandSettings).where(eq(brandSettings.userId, userId)).limit(1)
-  return rows[0] ?? { companyName: 'NEXUS.OS', logoUrl: null, primaryColor: '#12243D', accentColor: '#20B8AE', surfaceColor: '#F5F7FA' }
+  return rows[0] ?? { companyName: 'H&S Quality Service', logoUrl: null, primaryColor: '#12243D', accentColor: '#20B8AE', surfaceColor: '#F5F7FA' }
 }
 
 export async function saveBrandSettings(input: { companyName: string; logoUrl?: string | null; primaryColor: string; accentColor: string; surfaceColor: string }) {
   const userId = await getUserId()
-  const values = { userId, companyName: input.companyName.trim() || 'NEXUS.OS', logoUrl: input.logoUrl || null, primaryColor: input.primaryColor, accentColor: input.accentColor, surfaceColor: input.surfaceColor, updatedAt: new Date() }
+  const values = { userId, companyName: input.companyName.trim() || 'H&S Quality Service', logoUrl: input.logoUrl || null, primaryColor: input.primaryColor, accentColor: input.accentColor, surfaceColor: input.surfaceColor, updatedAt: new Date() }
   await db.insert(brandSettings).values(values).onConflictDoUpdate({ target: brandSettings.userId, set: values })
   return values
 }
