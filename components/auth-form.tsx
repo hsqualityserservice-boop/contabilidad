@@ -18,16 +18,21 @@ export default function AuthForm({ mode = 'sign-in' }: { mode?: 'sign-in' | 'sig
     event.preventDefault()
     setError('')
     setPending(true)
-    const result = mode === 'sign-up'
-      ? await authClient.signUp.email({ email, password, name: email.split('@')[0] })
-      : await authClient.signIn.email({ email, password })
-    if (result.error) {
-      setError(mode === 'sign-up' ? 'No se pudo crear la cuenta. Comprueba tus datos e inténtalo de nuevo.' : 'No se pudo iniciar sesión. Comprueba tus datos e inténtalo de nuevo.')
+    try {
+      const result = mode === 'sign-up'
+        ? await authClient.signUp.email({ email, password, name: email.split('@')[0] })
+        : await authClient.signIn.email({ email, password })
+      if (result.error) {
+        setError(mode === 'sign-up' ? 'No se pudo crear la cuenta. Comprueba tus datos e inténtalo de nuevo.' : 'No se pudo iniciar sesión. Comprueba tus datos e inténtalo de nuevo.')
+        setPending(false)
+        return
+      }
+      router.push('/')
+      router.refresh()
+    } catch {
+      setError('No se pudo conectar con el servidor. Inténtalo de nuevo.')
       setPending(false)
-      return
     }
-    router.push('/')
-    router.refresh()
   }
 
   return <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-900/5 sm:p-10">
