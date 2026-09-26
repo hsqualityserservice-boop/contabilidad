@@ -60,6 +60,6 @@ export default function AuthForm({ mode = 'sign-in' }: { mode?: 'sign-in' | 'sig
       {error && <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-600">{error}</p>}
       <button disabled={pending} className="mt-2 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#c1121f] text-sm font-semibold text-white disabled:opacity-60">{pending ? t.pending : (isSignIn ? 'Se connecter' : t.submit)}{!pending && <ArrowRight className="size-4" />}</button>
     </form>
-    <p className="mt-4 text-center text-sm text-slate-500">{isSignIn ? (locale === 'FR' ? "Vous n'avez pas encore de compte ?" : t.already) : t.already} <Link href={mode === 'sign-up' ? '/sign-in' : '/sign-up'} className="font-semibold text-[#c1121f] hover:underline">{isSignIn ? t.submit : t.signIn}</Link></p>
+    <p className="mt-4 text-center text-sm text-slate-500">{isSignIn ? (locale === 'FR' ? "Vous n'avez pas encore de compte ?" : t.already) : t.already} <Link href={mode === 'sign-up' ? '/sign-in' : '/sign-up'} className="font-semibold text-[#c1121f] hover:underline">{isSignIn ? (locale === 'FR' ? 'Créer un compte' : t.submit) : t.signIn}</Link></p>
   </div>
 }
