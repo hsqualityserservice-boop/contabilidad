@@ -1,14 +1,12 @@
-import { auth } from '@/lib/auth'
-import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
+import AuthForm from '@/components/auth-form'
 
-export default async function Page() {
-  const session = await auth.api.getSession({ headers: await headers() })
-
-  redirect(session?.user ? '/dashboard' : '/sign-in')
+export default function Page() {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-[#f5f7fa] p-5">
+      <AuthForm />
+    </main>
+  )
 }
-
-export const dynamic = 'force-dynamic'
 
 export async function generateMetadata() {
   return {
