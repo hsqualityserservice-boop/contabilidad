@@ -2,7 +2,7 @@ import AuthForm from '@/components/auth-form'
 
 export default function Page() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f5f7fa] p-5">
+    <main className="flex min-h-screen items-center justify-center bg-background p-5">
       <AuthForm />
     </main>
   )
