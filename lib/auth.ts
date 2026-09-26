@@ -14,8 +14,6 @@ const productionOrigins = [
   ...(process.env.VERCEL_PROJECT_PRODUCTION_URL ? [`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`] : []),
   'https://hs-cleaning.ch',
   'https://www.hs-cleaning.ch',
-  'https://hs-sarl.ch',
-  'https://www.hs-sarl.ch',
 ]
 
 export const auth = betterAuth({

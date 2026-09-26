@@ -5,9 +5,9 @@ import AuthForm from '@/components/auth-form'
 
 export default async function SignUpPage() {
   const session = await auth.api.getSession({ headers: await headers() })
-  if (session?.user) redirect('/')
+  if (session?.user) redirect('/dashboard')
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f4f7fa] px-4 py-10">
+    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <AuthForm mode="sign-up" />
     </main>
   )
