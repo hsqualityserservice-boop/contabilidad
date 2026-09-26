@@ -19,9 +19,32 @@ const productionOrigins = [
 ]
 
 export const auth = betterAuth({
+  // Role is persisted in the Neon user table and assigned server-side during sign-up.
   database: pool,
   baseURL: process.env.BETTER_AUTH_URL ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : process.env.V0_RUNTIME_URL),
   emailAndPassword: { enabled: true, autoSignIn: true },
+  user: {
+    additionalFields: {
+      role: {
+        type: 'string',
+        required: false,
+        defaultValue: 'USER',
+        input: false,
+      },
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          if (user.email.trim().toLowerCase() === 'h.squalityserservice@gmail.com') {
+            return { data: { ...user, role: 'ADMIN' } }
+          }
+          return { data: { ...user, role: 'USER' } }
+        },
+      },
+    },
+  },
   trustedOrigins: process.env.NODE_ENV === 'development' ? [...developmentOrigins, ...productionOrigins] : productionOrigins,
   session: { expiresIn: 60 * 60 * 24 * 7, updateAge: 60 * 60 * 24 },
   ...(process.env.NODE_ENV === 'development' ? {
