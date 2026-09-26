@@ -74,10 +74,10 @@ const cars = [
   { plate: '7159 MZR', model: 'Volkswagen Caddy', type: 'Furgoneta · 2021', status: 'maintenance', km: '67.930 km', fuel: '7,1 L/100 km', color: 'bg-amber-100 text-amber-700' },
 ]
 
-export default function Dashboard({ userName }: { userName?: string }) {
+export default function Dashboard({ userName, initialSection = 'dashboard' }: { userName?: string; initialSection?: Section }) {
   const router = useRouter()
-  const [lang, setLang] = useState<Lang>('ES')
-  const [section, setSection] = useState<Section>('dashboard')
+  const [lang, setLang] = useState<Lang>('FR')
+  const [section, setSection] = useState<Section>(initialSection)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
   const [notice, setNotice] = useState('')
