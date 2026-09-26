@@ -2,6 +2,7 @@ import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import AdminDashboard from '@/components/admin-dashboard'
+import Dashboard from '@/components/dashboard'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,9 +11,11 @@ export default async function DashboardPage() {
   if (!session?.user) redirect('/sign-in')
 
   const adminEmail = 'h.squalityserservice@gmail.com'
-  if (session.user.email.toLowerCase() !== adminEmail) redirect('/sign-in')
+  if (session.user.email.toLowerCase() === adminEmail) {
+    return <AdminDashboard userName={session.user.name} userEmail={session.user.email} />
+  }
 
-  return <AdminDashboard userName={session.user.name} userEmail={session.user.email} />
+  return <Dashboard userName={session.user.name} initialSection="client" />
 }
 
 export const metadata = {
