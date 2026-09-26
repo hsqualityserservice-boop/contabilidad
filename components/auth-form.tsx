@@ -10,9 +10,9 @@ import { saveCustomerProfile, type CustomerType } from '@/app/actions/customer-p
 type Locale = 'FR' | 'ES' | 'EN'
 
 const copy = {
-  FR: { title: 'Créez votre compte', subtitle: 'Accédez à votre espace H&S Quality Service.', type: 'Type de client', particular: 'Particulier', company: 'Entreprise', firstName: 'Nom', lastName: 'Prénom', phone: 'Téléphone', address: 'Adresse complète', companyName: "Nom de l'entreprise", vat: 'Numéro IDE / TVA suisse', password: 'Mot de passe', submit: 'Créer le compte', pending: 'Création du compte…', signIn: 'Se connecter', already: 'Vous avez déjà un compte ?', error: 'Impossible de créer le compte. Vérifiez vos données.', generic: 'Impossible de contacter le serveur.' },
-  ES: { title: 'Crea tu cuenta', subtitle: 'Crea tu acceso al espacio de H&S Quality Service.', type: 'Tipo de cliente', particular: 'Particular', company: 'Empresa', firstName: 'Nombre', lastName: 'Apellidos', phone: 'Teléfono', address: 'Dirección completa', companyName: 'Nombre de la empresa', vat: 'Número de registro IDE / TVA suizo', password: 'Contraseña', submit: 'Crear cuenta', pending: 'Creando cuenta…', signIn: 'Inicia sesión', already: '¿Ya tienes una cuenta?', error: 'No se pudo crear la cuenta. Comprueba tus datos.', generic: 'No se pudo conectar con el servidor.' },
-  EN: { title: 'Create your account', subtitle: 'Create your H&S Quality Service access.', type: 'Customer type', particular: 'Individual', company: 'Company', firstName: 'First name', lastName: 'Last name', phone: 'Phone', address: 'Full address', companyName: 'Company name', vat: 'Swiss UID / VAT number', password: 'Password', submit: 'Create account', pending: 'Creating account…', signIn: 'Sign in', already: 'Already have an account?', error: 'We could not create your account. Check your details.', generic: 'Could not connect to the server.' },
+  FR: { title: 'Créez votre compte', subtitle: 'Accédez à votre espace H&S Quality Service.', type: 'Type de client', particular: 'Particulier', company: 'Entreprise', firstName: 'Nom', lastName: 'Prénom', phone: 'Téléphone', address: 'Adresse complète', companyName: "Nom de l'entreprise", vat: 'Numéro IDE / TVA suisse', password: 'Mot de passe', submit: 'Créer un compte', pending: 'Création du compte…', signIn: 'Se connecter', already: 'Vous avez déjà un compte ?', error: 'Impossible de créer le compte. Vérifiez vos données.', invalidCredentials: 'Identifiants invalides', generic: 'Impossible de contacter le serveur.' },
+  ES: { title: 'Crea tu cuenta', subtitle: 'Crea tu acceso al espacio de H&S Quality Service.', type: 'Tipo de cliente', particular: 'Particular', company: 'Empresa', firstName: 'Nombre', lastName: 'Apellidos', phone: 'Teléfono', address: 'Dirección completa', companyName: 'Nombre de la empresa', vat: 'Número de registro IDE / TVA suizo', password: 'Contraseña', submit: 'Crear cuenta', pending: 'Creando cuenta…', signIn: 'Inicia sesión', already: '¿Ya tienes una cuenta?', error: 'No se pudo crear la cuenta. Comprueba tus datos.', invalidCredentials: 'Credenciales inválidas', generic: 'No se pudo conectar con el servidor.' },
+  EN: { title: 'Create your account', subtitle: 'Create your H&S Quality Service access.', type: 'Customer type', particular: 'Individual', company: 'Company', firstName: 'First name', lastName: 'Last name', phone: 'Phone', address: 'Full address', companyName: 'Company name', vat: 'Swiss UID / VAT number', password: 'Password', submit: 'Create account', pending: 'Creating account…', signIn: 'Sign in', already: 'Already have an account?', error: 'We could not create your account. Check your details.', invalidCredentials: 'Invalid credentials', generic: 'Could not connect to the server.' },
 } as const
 
 export default function AuthForm({ mode = 'sign-in' }: { mode?: 'sign-in' | 'sign-up' }) {
@@ -40,7 +40,7 @@ export default function AuthForm({ mode = 'sign-in' }: { mode?: 'sign-in' | 'sig
       const result = isSignIn
         ? await authClient.signIn.email({ email, password })
         : await authClient.signUp.email({ email, password, name: customerType === 'empresa' ? profile.companyName : `${profile.firstName} ${profile.lastName}` })
-      if (result.error) { setError(isSignIn ? 'No se pudo iniciar sesión.' : t.error); setPending(false); return }
+      if (result.error) { setError(isSignIn ? t.invalidCredentials : t.error); setPending(false); return }
       if (!isSignIn) await saveCustomerProfile({ customerType, ...profile })
       router.push('/dashboard')
       router.refresh()
@@ -60,6 +60,6 @@ export default function AuthForm({ mode = 'sign-in' }: { mode?: 'sign-in' | 'sig
       {error && <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-600">{error}</p>}
       <button disabled={pending} className="mt-2 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#c1121f] text-sm font-semibold text-white disabled:opacity-60">{pending ? t.pending : (isSignIn ? 'Se connecter' : t.submit)}{!pending && <ArrowRight className="size-4" />}</button>
     </form>
-    <p className="mt-4 text-center text-sm text-slate-500">{isSignIn ? 'Vous n’avez pas encore de compte ?' : t.already} <Link href={mode === 'sign-up' ? '/sign-in' : '/sign-up'} className="font-semibold text-[#c1121f] hover:underline">{isSignIn ? t.submit : t.signIn}</Link></p>
+    <p className="mt-4 text-center text-sm text-slate-500">{isSignIn ? (locale === 'FR' ? "Vous n'avez pas encore de compte ?" : t.already) : t.already} <Link href={mode === 'sign-up' ? '/sign-in' : '/sign-up'} className="font-semibold text-[#c1121f] hover:underline">{isSignIn ? t.submit : t.signIn}</Link></p>
   </div>
 }
