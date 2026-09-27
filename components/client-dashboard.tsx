@@ -5,6 +5,7 @@ import { type FormEvent, useMemo, useState } from 'react'
 import { jsPDF } from 'jspdf'
 import QRCode from 'qrcode'
 import { authClient } from '@/lib/auth-client'
+import { LogIn, Sparkles } from 'lucide-react'
 
 const destinations = {
   commercial: { label: { FR: 'Entreprises', ES: 'Empresas', EN: 'Business' }, items: [['Cliniques & Cabinets', 1.15], ['Boutiques / Magasins', 1], ['Restaurants', 1.2], ['Vitrines / Cristaux', .9]] },
@@ -25,6 +26,7 @@ export default function ClientDashboard() {
   const [selectedExtras, setSelectedExtras] = useState<string[]>([])
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
+  const [details, setDetails] = useState('')
   const [customer, setCustomer] = useState({ name: '', address: '', vat: '' })
   const [reservation, setReservation] = useState({ squareMeters: 80, date: '2026-10-02', slot: 'Matin · 08:00–12:00' })
   const [editingReservation, setEditingReservation] = useState(false)
@@ -48,7 +50,9 @@ export default function ClientDashboard() {
     pdf.setFont('helvetica', 'normal'); pdf.setFontSize(10)
     pdf.text('Av. du Simplon 9 · 1225 Chêne-Bourg', 20, 34)
     pdf.text('Assurance Baloise · couverture CHF 5’000’000', 20, 42)
-    pdf.text(`Devis pour ${customer.name || name}`, 20, 58); pdf.text(`Adresse: ${customer.address || 'Non renseignée'}`, 20, 66); pdf.text(`IDE / TVA: ${customer.vat || 'Non renseigné'}`, 20, 74); pdf.text(`${service} · ${region} · ${slot}`, 20, 82)
+    pdf.text(`Devis pour ${customer.name || name}`, 20, 58); pdf.text(`Adresse: ${customer.address || 'Non renseignée'}`, 20, 66); pdf.text(`IDE / TVA: ${customer.vat || 'Non renseigné'}`, 20, 74);     pdf.text(`${service} · ${region} · ${slot}`, 20, 82)
+    pdf.text(`Détails: ${details || 'Non renseignés'}`, 20, 88)
+
     pdf.text(`Sous-total HT                 CHF ${total.subtotal.toFixed(2)}`, 20, 92)
     pdf.text(`TVA suisse 8.1%              CHF ${total.vat.toFixed(2)}`, 20, 104)
     pdf.setFont('helvetica', 'bold'); pdf.text(`Total TTC                    CHF ${total.total.toFixed(2)}`, 20, 120)
@@ -61,8 +65,10 @@ export default function ClientDashboard() {
   }
   const signOut = async () => { await authClient.signOut(); window.location.href = '/' }
   return <main className="client-portal">
-    <header className="portal-header"><div><p className="eyebrow">H&amp;S SERVICE SÀRL / ESPACE CLIENT</p><h1>{copy.greeting}, {name}</h1><p>{copy.subtitle}</p></div><div className="header-actions"><select aria-label="Language" value={language} onChange={(event) => setLanguage(event.target.value as keyof typeof languages)}><option>FR</option><option>ES</option><option>EN</option></select><button className="secondary-button" onClick={signOut}>{copy.logout}</button></div></header>
-    <div className="client-grid"><section className="panel calculator-panel"><div className="panel-header"><div><p className="eyebrow">{copy.estimate}</p><h2>{copy.custom}</h2><p>{copy.tax}</p></div><strong className="calculator-total">CHF {total.total.toFixed(2)}</strong></div>
+    <header className="portal-header"><div className="portal-brand"><img src="/hs-logo.png" alt="H&S Quality Service" /><div><strong>H&amp;S Quality Service</strong><span>{copy.greeting}, {name}</span></div></div><div className="header-actions"><select aria-label="Language" value={language} onChange={(event) => setLanguage(event.target.value as keyof typeof languages)}><option>FR</option><option>ES</option><option>EN</option></select><button className="login-icon" onClick={signOut} aria-label={copy.logout} title={copy.logout}><LogIn /></button></div></header>
+    <div className="client-grid"><section className="panel calculator-panel"><div className="quote-code">HS2026</div><div className="panel-header"><div><p className="eyebrow">{copy.estimate}</p><h2>{copy.custom}</h2><p>{copy.tax}</p></div><strong className="calculator-total">CHF {total.total.toFixed(2)}</strong></div>
+      <section className="writing-guide"><div className="guide-title"><Sparkles /> <strong>{language === 'ES' ? 'Guía de redacción profesional' : language === 'EN' ? 'Professional writing guide' : 'Guide de rédaction professionnelle'}</strong></div><p>{language === 'ES' ? 'Mantenimiento regular de comunidad de vecinos con [X] plantas en [Localidad]. Tareas: limpieza de pasillos, gestión de contenedores de basura y control de accesos.' : language === 'EN' ? 'Regular building maintenance with [X] floors in [Location]. Tasks: corridor cleaning, waste-bin management and access control.' : 'Entretien régulier d’immeuble avec [X] étages à [Localité]. Tâches : nettoyage des couloirs, gestion des poubelles et contrôle des accès.'}</p></section>
+      <label className="details-label" htmlFor="work-details">{language === 'ES' ? 'Detalles específicos del trabajo' : language === 'EN' ? 'Specific work details' : 'Détails spécifiques de l’intervention'}</label><textarea id="work-details" className="work-details" value={details} onChange={(event) => setDetails(event.target.value)} placeholder={language === 'ES' ? 'Describe el lugar, la frecuencia y las tareas...' : language === 'EN' ? 'Describe the location, frequency and tasks...' : 'Décrivez le lieu, la fréquence et les tâches...'} rows={7} />
       <div className="destination-tabs">{Object.entries(destinations).map(([key, item]) => <button type="button" key={key} className={destination === key ? 'active' : ''} onClick={() => { const next = key as keyof typeof destinations; setDestination(next); setService(destinations[next].items[0][0]) }}>{item.label[language]}</button>)}</div>
       <label className="field"><span>{copy.service}</span><select value={service} onChange={(event) => setService(event.target.value)}>{destinations[destination].items.map(([label]) => <option key={label}>{label}</option>)}</select></label>
       <div className="customer-fields" aria-label={copy.billing}><label className="field"><span>{copy.name}</span><input value={customer.name} onChange={(event) => setCustomer({ ...customer, name: event.target.value })} placeholder={name} /></label><label className="field"><span>{copy.address}</span><input value={customer.address} onChange={(event) => setCustomer({ ...customer, address: event.target.value })} placeholder={language === 'FR' ? 'Rue, NPA, ville' : language === 'ES' ? 'Calle, código postal, ciudad' : 'Street, postal code, city'} /></label><label className="field"><span>{copy.vat}</span><input value={customer.vat} onChange={(event) => setCustomer({ ...customer, vat: event.target.value })} placeholder="CHE-123.456.789 TVA" /></label></div>
