@@ -11,7 +11,7 @@ interface AdminDashboardProps {
 }
 
 export default function AdminDashboard({ user }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'personnel' | 'planning' | 'invoices'>('personnel')
+  const [activeTab, setActiveTab] = useState<'clients' | 'personnel' | 'planning' | 'invoices'>('clients')
   const [uniqueCode, setUniqueCode] = useState('')
   const [codeGenerated, setCodeGenerated] = useState(false)
   const [staffMembers] = useState([
@@ -20,6 +20,10 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
   ])
   const [clockRecords] = useState([
     { id: 1, staff: 'Maria Gonzalez', date: '2026-09-27', clockIn: '08:15', clockOut: '17:30', photos: 2 },
+  ])
+  const [clients] = useState([
+    { name: 'Alpine Offices', vat: 'CHE-214.582.901 TVA', address: 'Genève · Suisse', invoice: 'HS-2026-0048' },
+    { name: 'Léman Résidences', vat: 'CHE-391.774.205 TVA', address: 'Vaud · Suisse', invoice: 'HS-2026-0047' },
   ])
   const [invoices] = useState([
     { id: 'HS-2026-0048', client: 'Clinique Medicale', amount: 324, status: 'Payée', qrCode: 'QR-0048' },
@@ -62,6 +66,12 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
 
       <nav className="admin-tabs">
         <button
+          className={`tab-btn ${activeTab === 'clients' ? 'active' : ''}`}
+          onClick={() => setActiveTab('clients')}
+        >
+          <Users /> Base de clients
+        </button>
+        <button
           className={`tab-btn ${activeTab === 'personnel' ? 'active' : ''}`}
           onClick={() => setActiveTab('personnel')}
         >
@@ -82,6 +92,19 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
       </nav>
 
       <section className="admin-content">
+        {activeTab === 'clients' && (
+          <div className="tab-panel">
+            <h2>Base de clients</h2>
+            <p className="subtitle">Entreprises suisses et factures QR associées.</p>
+            <div className="invoices-list">
+              <table>
+                <thead><tr><th>Entreprise</th><th>IDE / TVA</th><th>Adresse</th><th>Facture QR</th></tr></thead>
+                <tbody>{clients.map((client) => <tr key={client.name}><td><strong>{client.name}</strong></td><td>{client.vat}</td><td>{client.address}</td><td><code>{client.invoice} · CH39 0026 2262 1458 9201 H</code></td></tr>)}</tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* Personnel Tab */}
         {activeTab === 'personnel' && (
           <div className="tab-panel">
