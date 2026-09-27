@@ -4,8 +4,9 @@
 
 .public-site { min-height: 100vh; display: flex; flex-direction: column; background: var(--background); color: var(--foreground); }
 .public-header { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.5rem clamp(1.25rem, 5vw, 5rem); border-bottom: 1px solid var(--border); }
-.public-brand { color: var(--primary); font-weight: 800; letter-spacing: .08em; text-decoration: none; }
-.public-brand span { display: block; color: var(--foreground); font-size: .65rem; letter-spacing: .2em; }
+.public-brand { display: flex; align-items: center; gap: .7rem; color: var(--primary); font-weight: 800; letter-spacing: .08em; text-decoration: none; }
+.public-brand img { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; }
+.public-brand span { display: block; color: var(--foreground); font-size: .65rem; letter-spacing: .14em; }
 .public-header nav, .public-languages { display: flex; align-items: center; gap: 1rem; }
 .public-header nav a { color: var(--foreground); text-decoration: none; font-size: .9rem; }
 .public-login, .public-cta { border-radius: 999px; background: var(--primary); color: var(--primary-foreground) !important; padding: .7rem 1rem; }
