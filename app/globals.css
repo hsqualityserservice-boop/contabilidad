@@ -6,21 +6,21 @@
 
 :root {
   color-scheme: light;
-  --background: #f4f6f8;
-  --foreground: #122538;
+  --background: #ffffff;
+  --foreground: #171717;
   --card: #ffffff;
-  --card-foreground: #122538;
-  --primary: #103c63;
+  --card-foreground: #171717;
+  --primary: #ff6845;
   --primary-foreground: #ffffff;
-  --secondary: #e8eef3;
-  --secondary-foreground: #103c63;
-  --muted: #f0f3f5;
-  --muted-foreground: #6d7c88;
-  --accent: #d52b36;
+  --secondary: #fff0eb;
+  --secondary-foreground: #171717;
+  --muted: #f7f7f7;
+  --muted-foreground: #686868;
+  --accent: #ff6845;
   --accent-foreground: #ffffff;
-  --border: #dce4e9;
-  --input: #dce4e9;
-  --ring: #2c7297;
+  --border: #e7e7e7;
+  --input: #d9d9d9;
+  --ring: #ff6845;
   --radius: 0.75rem;
 }
 
@@ -120,7 +120,7 @@
 .nav-item { display: flex; align-items: center; gap: 11px; width: 100%; padding: 13px 11px; border: 0; border-radius: 6px; background: transparent; color: #a7bfcd; text-align: left; font-size: .76rem; font-weight: 600; }
 .nav-item svg:first-child { width: 18px; }
 .nav-item svg:last-child { width: 13px; margin-left: auto; opacity: .45; }
-.nav-item.active, .nav-item:hover { background: #1f527a; color: white; }
+.nav-item.active, .nav-item:hover { background: #ff6845; color: white; }
 .sidebar-bottom { display: flex; flex-direction: column; gap: 12px; margin-top: auto; }
 .sidebar-bottom a, .sidebar-bottom button { display: flex; align-items: center; gap: 8px; border: 0; background: transparent; color: #91adbd; font-size: .68rem; text-align: left; }
 .sidebar-bottom svg { width: 15px; }
