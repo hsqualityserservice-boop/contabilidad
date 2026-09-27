@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import AdminDashboard from '@/components/admin-dashboard'
 import Dashboard from '@/components/dashboard'
+import { getCustomerProfile } from '@/app/actions/customer-profile'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,7 +16,8 @@ export default async function DashboardPage() {
     return <AdminDashboard userName={session.user.name} userEmail={session.user.email} />
   }
 
-  return <Dashboard userName={session.user.name} initialSection="client" />
+  const customerProfile = await getCustomerProfile()
+  return <Dashboard userName={session.user.name} initialSection="client" customerProfile={customerProfile} />
 }
 
 export const metadata = {

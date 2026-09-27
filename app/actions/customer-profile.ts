@@ -4,8 +4,19 @@ import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { customerProfile } from '@/lib/db/schema'
 import { headers } from 'next/headers'
+import { eq } from 'drizzle-orm'
 
 export type CustomerType = 'particular' | 'empresa'
+
+export interface CustomerProfileView {
+  customerType: string
+  firstName: string | null
+  lastName: string | null
+  phone: string | null
+  address: string
+  companyName: string | null
+  vatNumber: string | null
+}
 
 export interface CustomerProfileInput {
   customerType: CustomerType
@@ -15,6 +26,13 @@ export interface CustomerProfileInput {
   address: string
   companyName?: string
   vatNumber?: string
+}
+
+export async function getCustomerProfile() {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user) throw new Error('Unauthorized')
+  const [profile] = await db.select().from(customerProfile).where(eq(customerProfile.userId, session.user.id)).limit(1)
+  return profile ?? null
 }
 
 export async function saveCustomerProfile(input: CustomerProfileInput) {

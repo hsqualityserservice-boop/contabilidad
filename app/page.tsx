@@ -4,8 +4,9 @@ export default function Page() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-background p-5">
       <AuthForm />
-      <footer className="max-w-md text-center text-xs leading-5 text-muted-foreground">
-        <a href="/privacy" className="font-medium underline underline-offset-4">Politique de confidentialité &amp; Sécurité (nLPD)</a>
+      <footer className="flex max-w-md flex-col items-center gap-2 text-center text-xs leading-5 text-muted-foreground">
+        <p>Acceso oficial para clientes particulares y empresas.</p>
+        <a href="/privacy" className="font-medium underline underline-offset-4">Política de privacidad y seguridad</a>
       </footer>
     </main>
   )

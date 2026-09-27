@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth-client'
 import { saveBrandSettings } from '@/app/actions/brand'
+import type { CustomerProfileView } from '@/app/actions/customer-profile'
 import { FleetModule } from '@/components/fleet-module'
 import { BookingModule } from '@/components/booking-module'
 import { DocumentsModule } from '@/components/documents-module'
@@ -74,7 +75,7 @@ const cars = [
   { plate: '7159 MZR', model: 'Volkswagen Caddy', type: 'Furgoneta · 2021', status: 'maintenance', km: '67.930 km', fuel: '7,1 L/100 km', color: 'bg-amber-100 text-amber-700' },
 ]
 
-export default function Dashboard({ userName, initialSection = 'dashboard' }: { userName?: string; initialSection?: Section }) {
+export default function Dashboard({ userName, initialSection = 'dashboard', customerProfile }: { userName?: string; initialSection?: Section; customerProfile?: CustomerProfileView | null }) {
   const router = useRouter()
   const [lang, setLang] = useState<Lang>('FR')
   const [section, setSection] = useState<Section>(initialSection)
@@ -117,7 +118,7 @@ export default function Dashboard({ userName, initialSection = 'dashboard' }: { 
         </header>
         <main className="mx-auto max-w-[1480px] p-5 sm:p-8">
           <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="mb-1 text-sm font-medium text-[#ea580c]">Viernes, 20 de septiembre de 2026</p><h1 className="text-2xl font-bold tracking-tight sm:text-[28px]">{section === 'dashboard' ? t.greeting : currentTitle}</h1><p className="mt-1 text-sm text-slate-500">{section === 'dashboard' ? t.subtitle : section === 'client' ? clientT.clientSub : t[`${section}Sub` as keyof typeof t] as string}</p></div><button onClick={() => action(section === 'planning' ? t.newBooking : t.newRecord)} className="inline-flex w-fit items-center gap-2 rounded-xl bg-orange-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#12243d]/10 transition hover:bg-[#1b3455]"><Plus className="size-4" />{section === 'planning' ? t.newBooking : section === 'fleet' ? t.addCar : section === 'billing' ? t.createInvoice : section === 'documents' ? t.upload : t.newRecord}</button></div>
-          {section === 'dashboard' ? <DashboardOverview t={t} action={action} onNavigate={setSection} /> : section === 'client' ? <ClientWorkspace lang={lang} t={clientT} onNotice={action} /> : section === 'fleet' ? <FleetModule t={t} /> : section === 'planning' ? <BookingModule t={t} /> : section === 'operations' ? <OperationsHub t={t} onNotice={action} /> : section === 'billing' ? <Billing t={t} action={action} /> : section === 'documents' ? <DocumentsModule t={t} /> : <SettingsModule t={t} logo={logo} onLogoChange={(value) => { setLogo(value); setBrand((current) => ({ ...current, logoUrl: value })) }} brand={brand} onBrandChange={setBrand} action={action} />}
+          {section === 'dashboard' ? <DashboardOverview t={t} action={action} onNavigate={setSection} /> : section === 'client' ? <ClientWorkspace lang={lang} t={clientT} onNotice={action} profile={customerProfile ?? null} /> : section === 'fleet' ? <FleetModule t={t} /> : section === 'planning' ? <BookingModule t={t} /> : section === 'operations' ? <OperationsHub t={t} onNotice={action} /> : section === 'billing' ? <Billing t={t} action={action} /> : section === 'documents' ? <DocumentsModule t={t} /> : <SettingsModule t={t} logo={logo} onLogoChange={(value) => { setLogo(value); setBrand((current) => ({ ...current, logoUrl: value })) }} brand={brand} onBrandChange={setBrand} action={action} />}
         </main>
       </div>
       {helpOpen && <div className="fixed inset-0 z-50 flex items-center justify-center bg-orange-700/40 p-4" role="dialog" aria-modal="true" aria-labelledby="help-title"><div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"><div className="flex items-start justify-between"><div><h2 id="help-title" className="text-lg font-bold text-[#152238]">Centro de ayuda</h2><p className="mt-1 text-sm text-slate-500">Estamos aquí para ayudarte con H&S Quality Service.</p></div><button onClick={() => setHelpOpen(false)} aria-label="Cerrar centro de ayuda" className="rounded-lg p-2 text-slate-400 hover:bg-slate-50"><X className="size-4" /></button></div><div className="mt-5 flex flex-col gap-3"><a href="mailto:soporte@nexus-os.com?subject=Ayuda%20con%20NEXUS.OS" className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-[#152238] hover:border-[#f97316]">Escribir al soporte<span className="mt-1 block text-xs font-normal text-slate-500">soporte@nexus-os.com</span></a><a href="mailto:soporte@nexus-os.com?subject=Acceso%20a%20mi%20cuenta" className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-[#152238] hover:border-[#f97316]">Problemas de acceso<span className="mt-1 block text-xs font-normal text-slate-500">Solicita ayuda para recuperar tu acceso por email.</span></a></div></div></div>}
