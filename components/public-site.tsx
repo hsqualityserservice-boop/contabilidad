@@ -2,23 +2,67 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { ArrowRight, BookOpen, HeartHandshake, ShieldCheck, Sparkles } from 'lucide-react'
+import { ArrowRight, Building2, Globe2, ShieldCheck, UserRound, UsersRound } from 'lucide-react'
 
 const copy = {
-  FR: { services: 'Nos services', journey: 'Notre parcours', training: 'Formation Save a Life', login: 'Espace client', title: 'La propreté, pensée pour vos équipes.', lead: 'H&S Quality Service accompagne entreprises et particuliers en Suisse romande avec des équipes fiables, une formation humaine et des devis clairs en CHF.', cta: 'Demander un devis', journeyTitle: 'Une équipe formée pour prendre soin des lieux et des personnes.', trainingTitle: 'Save a Life', trainingText: 'Une formation pratique inspirée par HUG, les sapeurs-pompiers et la Croix-Rouge : prévention, premiers gestes et responsabilité sur le terrain.', guide: 'Guide de rédaction professionnelle', details: 'Détails spécifiques de l’intervention', subtotal: 'Sous-total HT', vat: 'TVA suisse 8,1 %', total: 'Total TTC', quote: 'Ouvrir le devis', trust: 'Qualité suisse, responsabilité concrète.' },
-  ES: { services: 'Nuestros servicios', journey: 'Nuestro recorrido', training: 'Formación Save a Life', login: 'Espacio cliente', title: 'La limpieza, pensada para tus equipos.', lead: 'H&S Quality Service acompaña a empresas y particulares en la Suiza francófona con equipos fiables, formación humana y presupuestos claros en CHF.', cta: 'Solicitar presupuesto', journeyTitle: 'Un equipo formado para cuidar los espacios y las personas.', trainingTitle: 'Save a Life', trainingText: 'Formación práctica inspirada por HUG, los bomberos y la Cruz Roja: prevención, primeros gestos y responsabilidad en el terreno.', guide: 'Guía de redacción profesional', details: 'Detalles específicos del trabajo', subtotal: 'Subtotal sin IVA', vat: 'IVA suizo 8,1 %', total: 'Total con IVA', quote: 'Abrir presupuesto', trust: 'Calidad suiza, responsabilidad concreta.' },
-  EN: { services: 'Our services', journey: 'Our journey', training: 'Save a Life training', login: 'Client space', title: 'A cleaning service that cares about every detail.', lead: 'H&S Quality Service supports businesses and households in French-speaking Switzerland with reliable teams, human training and clear CHF quotes.', cta: 'Request a quote', journeyTitle: 'A team trained to care for places and people.', trainingTitle: 'Save a Life', trainingText: 'Practical training inspired by HUG, firefighters and the Red Cross: prevention, first response and responsibility in the field.', guide: 'Professional writing guide', details: 'Specific work details', subtotal: 'Net subtotal', vat: 'Swiss VAT 8.1%', total: 'Total incl. VAT', quote: 'Open quote', trust: 'Swiss quality, concrete responsibility.' },
+  FR: { client: 'Espace Client', staff: 'Espace Collaborateur', admin: 'Espace Administration', signup: 'Créer un compte', login: 'Accéder', tagline: 'H&S Service Sàrl', regions: 'Suisse romande' },
+  ES: { client: 'Espacio Cliente', staff: 'Espacio Colaborador', admin: 'Espacio Administración', signup: 'Crear una cuenta', login: 'Acceder', tagline: 'H&S Service Sàrl', regions: 'Suiza francófona' },
+  EN: { client: 'Client Space', staff: 'Collaborator Space', admin: 'Administration Space', signup: 'Create an account', login: 'Access', tagline: 'H&S Service Sàrl', regions: 'French-speaking Switzerland' },
 } as const
 
-export default function PublicSite({ page = 'home' }: { page?: 'home' | 'services' | 'donations' }) {
-  const [lang, setLang] = useState<keyof typeof copy>('FR')
-  const t = copy[lang]
-  return <main className="public-site">
-    <header className="public-header"><Link className="public-brand" href="/"><img src="/hs-logo.png" alt="H&S Quality Service" /><span>H&amp;S QUALITY SERVICE</span></Link><nav><Link href="#services">{t.services}</Link><Link href="#parcours">{t.journey}</Link><Link href="#save-a-life">{t.training}</Link><Link className="public-login" href="/admin/dashboard">{t.login}</Link></nav><div className="public-languages" aria-label="Language selector">{(['FR', 'ES', 'EN'] as const).map((item) => <button key={item} className={lang === item ? 'active' : ''} onClick={() => setLang(item)}>{item}</button>)}</div></header>
-    <section className="public-hero"><div><p className="eyebrow">H&S SERVICE SÀRL · SUISSE ROMANDE</p><h1>{page === 'services' ? t.services : page === 'donations' ? t.training : t.title}</h1><p className="public-lead">{t.lead}</p><Link className="public-cta" href="/client/dashboard">{t.cta}<ArrowRight /></Link></div><aside className="public-trust"><strong>CHF 5’000’000</strong><span>Garantie responsabilité civile<br />Baloise Assurances</span></aside></section>
-    <section id="services" className="public-section quote-preview"><div className="section-heading"><p className="eyebrow">DEVIS SUR MESURE</p><h2>{t.guide}</h2><p>{t.details}</p></div><div className="quote-card"><div className="quote-example"><Sparkles /><div><strong>{t.guide}</strong><p>{lang === 'ES' ? 'Mantenimiento regular de comunidad de vecinos, limpieza de pasillos y gestión de contenedores.' : lang === 'EN' ? 'Regular building maintenance, corridor cleaning and waste-bin management.' : 'Entretien régulier d’immeuble, nettoyage des couloirs et gestion des poubelles.'}</p></div></div><div className="quote-total"><span>{t.subtotal}<strong>CHF 324.00</strong></span><span>{t.vat}<strong>CHF 26.24</strong></span><span>{t.total}<strong>CHF 350.24</strong></span></div><Link className="public-cta compact" href="/client/dashboard">{t.quote}<ArrowRight /></Link></div></section>
-    <section id="parcours" className="public-section journey-section"><div className="section-heading"><p className="eyebrow">H&S QUALITY SERVICE</p><h2>{t.journeyTitle}</h2></div><div className="journey-grid"><article><span>01</span><ShieldCheck /><h3>HUG</h3><p>Culture de prévention et attention aux situations sensibles.</p></article><article><span>02</span><HeartHandshake /><h3>Sapeur-pompier</h3><p>Réflexes, sécurité et coordination quand chaque seconde compte.</p></article><article><span>03</span><BookOpen /><h3>Croix-Rouge</h3><p>Gestes utiles, dignité et accompagnement responsable.</p></article></div></section>
-    <section id="save-a-life" className="public-section training-section"><div><p className="eyebrow">FORMATION H&amp;S</p><h2>{t.trainingTitle}</h2><p>{t.trainingText}</p></div><div className="training-badge"><HeartHandshake /><strong>Prévenir · agir · protéger</strong><span>Une culture commune pour chaque intervention.</span></div></section>
-    <footer className="public-footer"><span>Genève · Vaud · Neuchâtel · Valais</span><span>© 2026 H&S Service Sàrl</span></footer>
-  </main>
+type Language = keyof typeof copy
+
+export default function PublicSite() {
+  const [language, setLanguage] = useState<Language>('FR')
+  const t = copy[language]
+
+  const portals = [
+    { label: t.client, detail: 'Genève · Vaud · Neuchâtel · Valais', icon: UserRound },
+    { label: t.staff, detail: 'Clock-In / Clock-Out · Photos terrain', icon: UsersRound },
+    { label: t.admin, detail: 'Personnel · Planning · Factures QR', icon: Building2 },
+  ]
+
+  return (
+    <main className="access-screen">
+      <header className="access-header">
+        <Link className="access-brand" href="/" aria-label="H&S Service Sàrl">
+          <img src="/hs-logo.png" alt="H&S Service Sàrl" />
+          <span>H&amp;S<br /><strong>SERVICE SÀRL</strong></span>
+        </Link>
+        <div className="access-header-actions">
+          <Globe2 aria-hidden="true" />
+          <div className="access-languages" aria-label="Language selector">
+            {(['FR', 'ES', 'EN'] as const).map((item) => (
+              <button key={item} className={language === item ? 'active' : ''} onClick={() => setLanguage(item)}>{item}</button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      <section className="access-content" aria-labelledby="access-title">
+        <div className="access-intro">
+          <p className="access-kicker">{t.tagline}</p>
+          <h1 id="access-title">{language === 'FR' ? 'Choisissez votre espace' : language === 'ES' ? 'Elige tu espacio' : 'Choose your space'}</h1>
+          <p>{t.regions}</p>
+        </div>
+        <div className="portal-grid">
+          {portals.map(({ label, detail, icon: Icon }) => (
+            <Link className="portal-card" href="/sign-in" key={label}>
+              <span className="portal-icon"><Icon aria-hidden="true" /></span>
+              <span className="portal-copy"><strong>{label}</strong><small>{detail}</small></span>
+              <ArrowRight aria-hidden="true" />
+            </Link>
+          ))}
+        </div>
+        <Link className="access-signup" href="/sign-up">{t.signup}<ArrowRight aria-hidden="true" /></Link>
+      </section>
+
+      <footer className="access-footer">
+        <span>Av. du Simplon 9 · 1225 Chêne-Bourg</span>
+        <span><ShieldCheck aria-hidden="true" /> Baloise · CHF 5’000’000</span>
+      </footer>
+    </main>
+  )
 }
+
+export { copy }
