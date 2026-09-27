@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { jsPDF } from 'jspdf'
 import QRCode from 'qrcode'
+import { authClient } from '@/lib/auth-client'
 import {
   ArrowRight,
   Building2,
@@ -45,8 +46,8 @@ const staff = [
   { name: 'Marco Rossi', role: 'Collaborateur', permit: 'Permis G', code: '306 887', initials: 'MR' },
 ]
 
-function Field({ label, placeholder, type = 'text' }: { label: string; placeholder: string; type?: string }) {
-  return <label className="field"><span>{label}</span><input type={type} placeholder={placeholder} /></label>
+function Field({ label, placeholder, type = 'text', name }: { label: string; placeholder: string; type?: string; name?: string }) {
+  return <label className="field"><span>{label}</span><input name={name} type={type} placeholder={placeholder} required /></label>
 }
 
 export default function HSCleaningApp() {
@@ -58,6 +59,17 @@ export default function HSCleaningApp() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [selectedExtras, setSelectedExtras] = useState<string[]>([])
   const t = translations[language]
+
+  const handleAuth = async (data: FormData, type: Mode, account: 'individual' | 'company') => {
+    const email = String(data.get('email') ?? '')
+    const password = String(data.get('password') ?? '')
+    const name = String(data.get('name') ?? data.get('legal') ?? '')
+    const result = type === 'login'
+      ? await authClient.signIn.email({ email, password })
+      : await authClient.signUp.email({ email, password, name })
+    if (result.error) return
+    setAuthenticated(true)
+  }
 
   const generatePdf = async () => {
     const iban = 'CH39 0026 2262 1458 9201 H'
@@ -91,7 +103,7 @@ export default function HSCleaningApp() {
     pdf.save('hs-cleaning-facture-qr-2026-0048.pdf')
   }
 
-  if (!authenticated) return <Landing t={t} language={language} setLanguage={setLanguage} mode={mode} setMode={setMode} accountType={accountType} setAccountType={setAccountType} onAccess={() => setAuthenticated(true)} />
+  if (!authenticated) return <Landing t={t} language={language} setLanguage={setLanguage} mode={mode} setMode={setMode} accountType={accountType} setAccountType={setAccountType} onAccess={handleAuth} />
 
   return <Dashboard t={t} language={language} setLanguage={setLanguage} tab={tab} setTab={setTab} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} onLogout={() => setAuthenticated(false)} onGeneratePdf={generatePdf} selectedExtras={selectedExtras} setSelectedExtras={setSelectedExtras} />
 }
@@ -102,8 +114,8 @@ function LanguageSwitcher({ language, setLanguage }: { language: Language; setLa
 
 function Brand() { return <div className="brand"><img className="brand-logo" src="/hs-logo.png" alt="H&S Service Quality Service" /><span className="brand-name">QUALITY<br /><strong>SERVICE</strong></span></div> }
 
-function Landing({ t, language, setLanguage, mode, setMode, accountType, setAccountType, onAccess }: { t: (typeof translations)[Language]; language: Language; setLanguage: (language: Language) => void; mode: Mode; setMode: (mode: Mode) => void; accountType: 'individual' | 'company'; setAccountType: (type: 'individual' | 'company') => void; onAccess: () => void }) {
-  return <main className="landing"><section className="landing-visual"><div className="visual-top"><Brand /><LanguageSwitcher language={language} setLanguage={setLanguage} /></div><div className="visual-copy"><p className="eyebrow light">{t.eyebrow}</p><h1>{t.title}</h1><p>{t.subtitle}</p><div className="trust-row"><span><ShieldCheck /> {t.coverage}</span><span><LockKeyhole /> {t.swiss}</span></div></div><div className="visual-footer"><span>Genève · Vaud · Fribourg</span><span>© 2026 H&S Quality Service</span></div></section><section className="auth-panel"><div className="auth-inner"><div className="mobile-brand"><Brand /><LanguageSwitcher language={language} setLanguage={setLanguage} /></div><div className="auth-heading"><p className="eyebrow">{mode === 'login' ? 'ESPACE SÉCURISÉ' : 'BIENVENUE CHEZ H&S'}</p><h2>{mode === 'login' ? t.login : t.signup}</h2><p>{mode === 'login' ? 'Gérez vos opérations en toute simplicité.' : 'Créez votre accès professionnel en quelques étapes.'}</p></div>{mode === 'signup' && <div className="account-toggle"><button className={accountType === 'individual' ? 'active' : ''} onClick={() => setAccountType('individual')}><UserRound />{t.individual}</button><button className={accountType === 'company' ? 'active' : ''} onClick={() => setAccountType('company')}><Building2 />{t.company}</button></div>}<form onSubmit={(event) => { event.preventDefault(); onAccess() }} className="auth-form">{mode === 'signup' && <>{accountType === 'individual' ? <><Field label={t.name} placeholder="Sophie Martin" /><Field label={t.phone} placeholder="+41 79 000 00 00" /><Field label={t.address} placeholder="Rue du Centre 12, 1225 Chêne-Bourg" /></> : <><Field label={t.legal} placeholder="H&S Quality Service Sàrl" /><Field label={t.vat} placeholder="CHE-123.456.789 TVA" /></>}</>}<Field label={t.email} placeholder="sophie@exemple.ch" type="email" /><Field label={t.password} placeholder="••••••••••••" type="password" /><button className="primary-button" type="submit">{mode === 'login' ? <><LogIn />{t.access}</> : <><Check />{t.create}</>}<ArrowRight /></button></form><button className="mode-switch" onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}>{mode === 'login' ? <>{t.signup} <ArrowRight /></> : <>{t.back} <ArrowRight /></>}</button><p className="auth-legal">{t.policyText} <a href="https://www.fedlex.admin.ch/eli/cc/2022/491/fr" target="_blank" rel="noreferrer">{t.policy}</a></p></div></section></main>
+function Landing({ t, language, setLanguage, mode, setMode, accountType, setAccountType, onAccess }: { t: (typeof translations)[Language]; language: Language; setLanguage: (language: Language) => void; mode: Mode; setMode: (mode: Mode) => void; accountType: 'individual' | 'company'; setAccountType: (type: 'individual' | 'company') => void; onAccess: (data: FormData, type: Mode, account: 'individual' | 'company') => Promise<void> }) {
+  return <main className="landing"><section className="landing-visual"><div className="visual-top"><Brand /><LanguageSwitcher language={language} setLanguage={setLanguage} /></div><div className="visual-copy"><p className="eyebrow light">{t.eyebrow}</p><h1>{t.title}</h1><p>{t.subtitle}</p><div className="trust-row"><span><ShieldCheck /> {t.coverage}</span><span><LockKeyhole /> {t.swiss}</span></div></div><div className="visual-footer"><span>Genève · Vaud · Fribourg</span><span>© 2026 H&S Quality Service</span></div></section><section className="auth-panel"><div className="auth-inner"><div className="mobile-brand"><Brand /><LanguageSwitcher language={language} setLanguage={setLanguage} /></div><div className="auth-heading"><p className="eyebrow">{mode === 'login' ? 'ESPACE SÉCURISÉ' : 'BIENVENUE CHEZ H&S'}</p><h2>{mode === 'login' ? t.login : t.signup}</h2><p>{mode === 'login' ? 'Gérez vos opérations en toute simplicité.' : 'Créez votre accès professionnel en quelques étapes.'}</p></div>{mode === 'signup' && <div className="account-toggle"><button className={accountType === 'individual' ? 'active' : ''} onClick={() => setAccountType('individual')}><UserRound />{t.individual}</button><button className={accountType === 'company' ? 'active' : ''} onClick={() => setAccountType('company')}><Building2 />{t.company}</button></div>}<form onSubmit={async (event) => { event.preventDefault(); await onAccess(new FormData(event.currentTarget), mode, accountType) }} className="auth-form">{mode === 'signup' && <>{accountType === 'individual' ? <><Field name="name" label={t.name} placeholder="Sophie Martin" /><Field label={t.phone} placeholder="+41 79 000 00 00" /><Field label={t.address} placeholder="Rue du Centre 12, 1225 Chêne-Bourg" /></> : <><Field name="legal" label={t.legal} placeholder="H&S Quality Service Sàrl" /><Field label={t.vat} placeholder="CHE-123.456.789 TVA" /></>}</>}<Field name="email" label={t.email} placeholder="sophie@exemple.ch" type="email" /><Field name="password" label={t.password} placeholder="••••••••••••" type="password" /><button className="primary-button" type="submit">{mode === 'login' ? <><LogIn />{t.access}</> : <><Check />{t.create}</>}<ArrowRight /></button></form><button className="mode-switch" onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}>{mode === 'login' ? <>{t.signup} <ArrowRight /></> : <>{t.back} <ArrowRight /></>}</button><p className="auth-legal">{t.policyText} <a href="https://www.fedlex.admin.ch/eli/cc/2022/491/fr" target="_blank" rel="noreferrer">{t.policy}</a></p></div></section></main>
 }
 
 function Dashboard({ t, language, setLanguage, tab, setTab, mobileOpen, setMobileOpen, onLogout, onGeneratePdf, selectedExtras, setSelectedExtras }: { t: (typeof translations)[Language]; language: Language; setLanguage: (language: Language) => void; tab: Tab; setTab: (tab: Tab) => void; mobileOpen: boolean; setMobileOpen: (open: boolean) => void; onLogout: () => void; onGeneratePdf: () => void; selectedExtras: string[]; setSelectedExtras: (extras: string[]) => void }) {
