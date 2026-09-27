@@ -1,7 +1,11 @@
 import { betterAuth } from 'better-auth'
 import { pool } from '@/lib/db'
 
-const adminEmail = 'h.squalityserservice@gmail.com'
+const roleMap: Record<string, 'ADMIN' | 'STAFF' | 'CLIENT'> = {
+  'h.squalityserservice@gmail.com': 'ADMIN',
+  'h.squalityservice@gmail.com': 'STAFF',
+  'rhur.91@gmail.com': 'CLIENT',
+}
 
 export const auth = betterAuth({
   database: pool,
@@ -17,8 +21,9 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          if (user.email.toLowerCase() === adminEmail) {
-            await pool.query('UPDATE "user" SET role = $1 WHERE id = $2', ['ADMIN', user.id])
+          const assignedRole = roleMap[user.email.toLowerCase()]
+          if (assignedRole) {
+            await pool.query('UPDATE "user" SET role = $1 WHERE id = $2', [assignedRole, user.id])
           }
         },
       },
