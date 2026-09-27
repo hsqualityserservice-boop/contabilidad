@@ -4,8 +4,9 @@ import { useState } from 'react'
 import { CalendarDays, Check, Clock3, MessageSquareText, Send } from 'lucide-react'
 import type { ClientCopy, Lang } from '@/lib/i18n'
 import { createPaymentSession } from '@/app/actions/stripe'
+import type { CustomerProfileView } from '@/app/actions/customer-profile'
 
-export function ClientWorkspace({ lang, t, onNotice }: { lang: Lang; t: ClientCopy; onNotice: (message: string) => void }) {
+export function ClientWorkspace({ lang, t, onNotice, profile }: { lang: Lang; t: ClientCopy; onNotice: (message: string) => void; profile?: CustomerProfileView | null }) {
   const [details, setDetails] = useState('')
   const [day, setDay] = useState('')
   const [slot, setSlot] = useState('')
@@ -47,6 +48,16 @@ export function ClientWorkspace({ lang, t, onNotice }: { lang: Lang; t: ClientCo
   return (
     <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
       <section className="rounded-2xl border border-[#e5eaf0] bg-white p-6 shadow-[0_4px_16px_rgba(20,35,55,0.03)]">
+        <div className="mb-6 rounded-xl border border-orange-100 bg-orange-50 p-4">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.12em] text-orange-700">Datos del cliente</p>
+              <h2 className="mt-1 text-base font-bold text-slate-900">{profile?.customerType === 'empresa' ? profile.companyName : `${profile?.firstName ?? ''} ${profile?.lastName ?? ''}`.trim() || 'Perfil pendiente'}</h2>
+            </div>
+            <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold uppercase text-orange-700">{profile?.customerType === 'empresa' ? 'Empresa' : 'Particular'}</span>
+          </div>
+          {profile ? <div className="mt-3 grid gap-1 text-xs leading-5 text-slate-600 sm:grid-cols-2"><span>Dirección: {profile.address}</span><span>Teléfono: {profile.phone}</span>{profile.customerType === 'empresa' && <span className="sm:col-span-2">IDE / TVA: {profile.vatNumber}</span>}</div> : <p className="mt-2 text-xs text-orange-800">Completa tu registro para guardar tus datos de facturación.</p>}
+        </div>
         <div className="mb-6 flex items-start gap-3"><div className="flex size-10 items-center justify-center rounded-xl bg-[#e7f7f5] text-[#ea580c]"><MessageSquareText /></div><div><h2 className="text-lg font-bold">{t.clientTitle}</h2><p className="mt-1 text-sm text-slate-500">{t.clientSub}</p></div></div>
         <label className="flex flex-col gap-2 text-sm font-semibold"><span>{t.interventionDetails}</span><textarea value={details} onChange={(event) => setDetails(event.target.value)} placeholder={t.interventionPlaceholder} rows={5} className="rounded-xl border border-slate-200 bg-slate-50 p-3 font-normal outline-none focus:border-[#ea580c] focus:ring-2 focus:ring-[#ea580c]/15" /></label>
         <fieldset className="mt-6 flex flex-col gap-4"><legend className="mb-1 flex items-center gap-2 text-sm font-bold"><CalendarDays className="size-4 text-[#ea580c]" />{t.preferredSchedule}</legend><label className="flex flex-col gap-2 text-sm font-semibold"><span>{t.chooseDay}</span><input type="date" value={day} onChange={(event) => setDay(event.target.value)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 font-normal" /></label><div className="flex flex-col gap-2 text-sm font-semibold"><span>{t.chooseSlot}</span><div className="grid gap-2 sm:grid-cols-2"><button type="button" aria-pressed={slot === 'morning'} onClick={() => setSlot('morning')} className={`rounded-xl border px-3 py-3 text-left text-sm transition ${slot === 'morning' ? 'border-[#ea580c] bg-[#fff1e8] text-[#c2410c]' : 'border-slate-200 hover:border-[#ea580c]'}`}><Clock3 className="mb-1 size-4" />{t.morning}</button><button type="button" aria-pressed={slot === 'afternoon'} onClick={() => setSlot('afternoon')} className={`rounded-xl border px-3 py-3 text-left text-sm transition ${slot === 'afternoon' ? 'border-[#ea580c] bg-[#fff1e8] text-[#c2410c]' : 'border-slate-200 hover:border-[#ea580c]'}`}><Clock3 className="mb-1 size-4" />{t.afternoon}</button></div></div></fieldset>
