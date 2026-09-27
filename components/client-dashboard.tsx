@@ -25,6 +25,7 @@ export default function ClientDashboard() {
   const [selectedExtras, setSelectedExtras] = useState<string[]>([])
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
+  const [customer, setCustomer] = useState({ name: '', address: '', vat: '' })
   const copy = languages[language]
   const name = session?.user?.name?.split(' ')[0] || 'Client'
   const total = useMemo(() => {
@@ -41,7 +42,7 @@ export default function ClientDashboard() {
     pdf.setFont('helvetica', 'normal'); pdf.setFontSize(10)
     pdf.text('Av. du Simplon 9 · 1225 Chêne-Bourg', 20, 34)
     pdf.text('Assurance Baloise · couverture CHF 5’000’000', 20, 42)
-    pdf.text(`Devis pour ${name}`, 20, 58); pdf.text(`${service} · ${region} · ${slot}`, 20, 70)
+    pdf.text(`Devis pour ${customer.name || name}`, 20, 58); pdf.text(`Adresse: ${customer.address || 'Non renseignée'}`, 20, 66); pdf.text(`IDE / TVA: ${customer.vat || 'Non renseigné'}`, 20, 74); pdf.text(`${service} · ${region} · ${slot}`, 20, 82)
     pdf.text(`Sous-total HT                 CHF ${total.subtotal.toFixed(2)}`, 20, 92)
     pdf.text(`TVA suisse 8.1%              CHF ${total.vat.toFixed(2)}`, 20, 104)
     pdf.setFont('helvetica', 'bold'); pdf.text(`Total TTC                    CHF ${total.total.toFixed(2)}`, 20, 120)
@@ -58,6 +59,7 @@ export default function ClientDashboard() {
     <div className="client-grid"><section className="panel calculator-panel"><div className="panel-header"><div><p className="eyebrow">ESTIMATION EN CHF</p><h2>Ménage sur mesure</h2><p>TVA suisse calculée automatiquement à 8.1%.</p></div><strong className="calculator-total">CHF {total.total.toFixed(2)}</strong></div>
       <div className="destination-tabs">{Object.entries(destinations).map(([key, item]) => <button type="button" key={key} className={destination === key ? 'active' : ''} onClick={() => { const next = key as keyof typeof destinations; setDestination(next); setService(destinations[next].items[0][0]) }}>{item.label}</button>)}</div>
       <label className="field"><span>Prestation</span><select value={service} onChange={(event) => setService(event.target.value)}>{destinations[destination].items.map(([label]) => <option key={label}>{label}</option>)}</select></label>
+      <div className="customer-fields" aria-label="Informations de facturation"><label className="field"><span>Raison sociale / Nom</span><input value={customer.name} onChange={(event) => setCustomer({ ...customer, name: event.target.value })} placeholder={name} /></label><label className="field"><span>Adresse</span><input value={customer.address} onChange={(event) => setCustomer({ ...customer, address: event.target.value })} placeholder="Rue, NPA, ville" /></label><label className="field"><span>IDE / TVA</span><input value={customer.vat} onChange={(event) => setCustomer({ ...customer, vat: event.target.value })} placeholder="CHE-123.456.789 TVA" /></label></div>
       <div className="extras-grid">{extras.map(([key, label, price]) => <label className="extra-option" key={key}><input type="checkbox" checked={selectedExtras.includes(key)} onChange={() => setSelectedExtras((current) => current.includes(key) ? current.filter((item) => item !== key) : [...current, key])} /><span>{label}</span><small>+ CHF {price}.00</small></label>)}</div>
       <div className="calculator-breakdown"><span>Sous-total HT <strong>CHF {total.subtotal.toFixed(2)}</strong></span><span>TVA 8.1% <strong>CHF {total.vat.toFixed(2)}</strong></span><span>Total TTC <strong>CHF {total.total.toFixed(2)}</strong></span></div><button className="primary-button" onClick={generateQuote}>Générer le devis / Facture</button>
     </section><aside className="client-side"><section className="panel"><p className="eyebrow">{copy.availability}</p><h2>{copy.region}</h2><label className="field"><span>Région</span><select value={region} onChange={(event) => setRegion(event.target.value)}>{regions.map(([label]) => <option key={label}>{label}</option>)}</select></label><label className="field"><span>{copy.slot}</span><select value={slot} onChange={(event) => setSlot(event.target.value)}><option>Matin · 08:00–12:00</option><option>Après-midi · 13:00–17:00</option></select></label></section><section className="panel assistant-panel"><p className="eyebrow">{copy.assistant}</p><h2>Une réponse, dans votre langue.</h2><form onSubmit={askAssistant}><input aria-label={copy.ask} value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={copy.ask} /><button className="primary-button" type="submit">Envoyer</button></form>{answer && <p className="assistant-answer">{answer}</p>}</section></aside></div><Link className="personnel-access" href="/admin/dashboard">Espace Personnel &amp; Administration</Link>
