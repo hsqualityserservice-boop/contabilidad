@@ -32,7 +32,7 @@ export async function saveCustomerProfile(input: CustomerProfileInput) {
   }
 
   const validParticular = values.customerType === 'particular' && values.firstName && values.lastName && values.phone && !values.companyName && !values.vatNumber
-  const validEmpresa = values.customerType === 'empresa' && values.companyName && values.vatNumber && !values.firstName && !values.lastName && !values.phone
+  const validEmpresa = values.customerType === 'empresa' && values.companyName && values.vatNumber && values.firstName && values.lastName && values.phone
   if (!values.address || (!validParticular && !validEmpresa)) throw new Error('Invalid profile')
 
   await db.insert(customerProfile).values({
