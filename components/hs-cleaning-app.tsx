@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { jsPDF } from 'jspdf'
 import QRCode from 'qrcode'
@@ -51,7 +51,7 @@ function Field({ label, placeholder, type = 'text', name }: { label: string; pla
   return <label className="field"><span>{label}</span><input name={name} type={type} placeholder={placeholder} required /></label>
 }
 
-export default function HSCleaningApp() {
+export default function HSCleaningApp({ requiredRole }: { requiredRole?: 'ADMIN' | 'CLIENT' } = {}) {
   const [language, setLanguage] = useState<Language>('FR')
   const [mode, setMode] = useState<Mode>('login')
   const [accountType, setAccountType] = useState<'individual' | 'company'>('individual')
@@ -78,6 +78,12 @@ export default function HSCleaningApp() {
   const user = session?.user as ({ name?: string; email?: string; role?: string } | undefined)
   const isAdmin = user?.role === 'ADMIN'
   const welcomeName = isAdmin ? 'Administrateur' : user?.name?.trim() || user?.email?.split('@')[0] || 'Client'
+
+  useEffect(() => {
+    if (!session?.user || !requiredRole) return
+    const role = (session.user as { role?: string }).role === 'ADMIN' ? 'ADMIN' : 'CLIENT'
+    if (role !== requiredRole) router.replace(role === 'ADMIN' ? '/admin/dashboard' : '/client/dashboard')
+  }, [requiredRole, router, session?.user])
 
   const handleLogout = async () => {
     await authClient.signOut()

@@ -1,4 +1,4 @@
-import HSCleaningApp from '@/components/hs-cleaning-app'
+import PublicSite from '@/components/public-site'
 
 export const metadata = {
   title: 'hs-cleaning.ch — Espace client & opérations',
@@ -6,7 +6,7 @@ export const metadata = {
 }
 
 export default function Page() {
-  return <HSCleaningApp />
+  return <PublicSite />
 }
 
 export const dynamic = 'force-static'
