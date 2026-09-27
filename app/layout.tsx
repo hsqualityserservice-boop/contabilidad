@@ -2,8 +2,10 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'H&S Quality Service — Espace sécurisé',
-  description: 'Gestion des interventions, planning et espaces sécurisés de H&S Quality Service.',
+  title: 'hs-cleaning.ch — Espace client & opérations',
+  description: 'La plateforme suisse de H&S Quality Service pour piloter vos interventions, équipes et factures.',
+  metadataBase: new URL('https://hs-cleaning.ch'),
+  icons: { icon: '/icon.svg' },
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
