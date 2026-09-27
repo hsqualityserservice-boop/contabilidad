@@ -24,8 +24,32 @@ export default function NettoyageApp() {
   const [metros, setMetros] = useState('')
   const [detalles, setDetalles] = useState('')
   const [loading, setLoading] = useState(false)
+  const [paymentLoading, setPaymentLoading] = useState(false)
   const [cotizacion, setCotizacion] = useState<Cotizacion | null>(null)
   const [error, setError] = useState('')
+
+  async function procederAuPaiement() {
+    if (!cotizacion) return
+
+    setPaymentLoading(true)
+    setError('')
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          totalCHF: cotizacion.costes.totalPresupuestoCHF,
+          servicioNom: servicio,
+        }),
+      })
+      const data = await response.json()
+      if (!response.ok || !data.url) throw new Error(data.error || 'No se pudo iniciar el pago.')
+      window.location.assign(data.url)
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : 'No se pudo iniciar el pago.')
+      setPaymentLoading(false)
+    }
+  }
 
   async function calcularPrecio(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -120,7 +144,7 @@ export default function NettoyageApp() {
                 <li className="flex justify-between border-t border-dashed pt-2 font-semibold text-slate-500"><span>Sous-total HT</span><span>{money.format(cotizacion.costes.subtotalHT)}</span></li>
                 <li className="flex justify-between font-semibold text-slate-500"><span>TVA · 8,1 %</span><span>{money.format(cotizacion.costes.tvaCalculado)}</span></li>
               </ul>
-              <button type="button" className="mt-4 w-full rounded-xl bg-emerald-600 py-3 text-sm font-bold text-white shadow-md shadow-emerald-100 transition-colors hover:bg-emerald-700">Réserver maintenant via TWINT</button>
+              <button type="button" onClick={procederAuPaiement} disabled={paymentLoading} className="mt-4 w-full rounded-xl bg-emerald-600 py-3 text-sm font-bold text-white shadow-md shadow-emerald-100 transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60">{paymentLoading ? 'Redirection vers Stripe…' : 'Réserver maintenant via TWINT'}</button>
             </article>
           </section>
         )}
