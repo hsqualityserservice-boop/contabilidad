@@ -51,7 +51,7 @@ function Field({ label, placeholder, type = 'text', name }: { label: string; pla
   return <label className="field"><span>{label}</span><input name={name} type={type} placeholder={placeholder} required /></label>
 }
 
-export default function HSCleaningApp({ requiredRole }: { requiredRole?: 'ADMIN' | 'CLIENT' } = {}) {
+export default function HSCleaningApp({ requiredRole }: { requiredRole?: 'ADMIN' | 'STAFF' | 'CLIENT' } = {}) {
   const [language, setLanguage] = useState<Language>('FR')
   const [mode, setMode] = useState<Mode>('login')
   const [accountType, setAccountType] = useState<'individual' | 'company'>('individual')
@@ -81,8 +81,11 @@ export default function HSCleaningApp({ requiredRole }: { requiredRole?: 'ADMIN'
 
   useEffect(() => {
     if (!session?.user || !requiredRole) return
-    const role = (session.user as { role?: string }).role === 'ADMIN' ? 'ADMIN' : 'CLIENT'
-    if (role !== requiredRole) router.replace(role === 'ADMIN' ? '/admin/dashboard' : '/client/dashboard')
+    const role = (session.user as { role?: string }).role
+    if (role !== 'ADMIN' && role !== 'STAFF' && role !== 'CLIENT') return
+    if (role !== requiredRole) {
+      router.replace(role === 'ADMIN' ? '/admin/dashboard' : role === 'STAFF' ? '/dashboard' : '/client/dashboard')
+    }
   }, [requiredRole, router, session?.user])
 
   const handleLogout = async () => {
