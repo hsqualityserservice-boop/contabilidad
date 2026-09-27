@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SwissClean Pro</string>
+    <string name="title_activity_main">SwissClean Pro</string>
+    <string name="package_name">com.swissclean.app</string>
+    <string name="custom_url_scheme">com.swissclean.app</string>
+</resources>
