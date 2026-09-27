@@ -127,6 +127,9 @@ importers:
       '@capacitor/ios':
         specifier: ^8.5.2
         version: 8.5.2(@capacitor/core@8.5.2)
+      '@stripe/stripe-js':
+        specifier: ^9.17.0
+        version: 9.17.0
       '@types/qrcode':
         specifier: ^1.5.6
         version: 1.5.6
@@ -865,6 +868,10 @@ packages:
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
+
+  '@stripe/stripe-js@9.17.0':
+    resolution: {integrity: sha512-uidL4OJum5kivsOAQnVfQmYLJ2zdgirtmT0zWgskASZ4TPXxpXQ0MNrzW4NsXB90uEqmPHpSEtciLFbF1QQvNA==}
+    engines: {node: '>=12.16'}
 
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
@@ -3548,6 +3555,8 @@ snapshots:
   '@sindresorhus/merge-streams@4.0.0': {}
 
   '@standard-schema/spec@1.1.0': {}
+
+  '@stripe/stripe-js@9.17.0': {}
 
   '@swc/helpers@0.5.23':
     dependencies:
