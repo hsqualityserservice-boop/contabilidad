@@ -2,7 +2,7 @@ import { generateObject } from 'ai'
 import { z } from 'zod'
 
 const TARIFAS = {
-  precioHoraPersona: 38,
+  precioHoraPersona: 25,
   rendimientoM2PorHora: 20,
   iva: 0.081,
   multiplicadores: {
@@ -10,17 +10,19 @@ const TARIFAS = {
     local: 1.2,
     vitrina: 1.3,
     cabinet: 1.5,
+    debarras: 1.8,
   },
   productosPorM2: {
     apartamento: 0.5,
     local: 0.8,
     vitrina: 1,
     cabinet: 1.5,
+    debarras: 1.2,
   },
 } as const
 
 const datosSchema = z.object({
-  tipoEspacio: z.enum(['apartamento', 'local', 'vitrina', 'cabinet']),
+  tipoEspacio: z.enum(['apartamento', 'local', 'vitrina', 'cabinet', 'debarras']),
   metrosCuadrados: z.number().positive(),
   numeroVitrinas: z.number().nonnegative().optional(),
   complejidadExtra: z.boolean(),
@@ -31,7 +33,11 @@ const redondear = (valor: number) => Math.round(valor * 100) / 100
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const prompt = typeof body.prompt === 'string' ? body.prompt.trim() : ''
+    const prompt = typeof body.prompt === 'string'
+      ? body.prompt.trim()
+      : typeof body.message === 'string'
+        ? body.message.trim()
+        : ''
     const language = typeof body.language === 'string' ? body.language : 'FR'
 
     if (prompt.length < 2) {
@@ -41,7 +47,7 @@ export async function POST(request: Request) {
     const { object: datosExtraidos } = await generateObject({
       model: 'anthropic/claude-haiku-4.5',
       schema: datosSchema,
-      system: `Tu extrais uniquement les données d'une demande de nettoyage suisse. N'inclus jamais de déménagement, débarras ou transport de biens. Réponds aux champs du schéma. Si une donnée manque, estime-la prudemment. Le résultat est destiné à un devis de nettoyage en CHF.`,
+      system: `Extrae únicamente datos de una solicitud de limpieza suiza. Incluye débarras cuando corresponda como tipo de espacio, pero no inventes servicios de mudanza o transporte. Responde solo con los campos del esquema. Si falta una medida, estima de forma prudente. El resultado se usa para un presupuesto en CHF.`,
       prompt: `Langue de réponse: ${language}. Demande: ${prompt}`,
     })
 
