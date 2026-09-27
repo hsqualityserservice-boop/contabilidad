@@ -1,91 +1,62 @@
-import { generateObject } from 'ai'
-import { z } from 'zod'
+import { NextResponse } from 'next/server'
 
-const TARIFAS = {
-  precioHoraPersona: 25,
-  rendimientoM2PorHora: 20,
-  iva: 0.081,
-  multiplicadores: {
-    apartamento: 1,
-    local: 1.2,
-    vitrina: 1.3,
-    cabinet: 1.5,
-    debarras: 1.8,
+const CONFIG_SUISSE_ROMANDE = {
+  tva: 0.081,
+  rendementM2ParHeure: 20,
+  tarifsParRegion: {
+    geneve: { horaire: 52, fraisDeplacement: 0 },
+    vaud: { horaire: 46, fraisDeplacement: 0 },
+    neuchatel: { horaire: 46, fraisDeplacement: 0 },
+    fribourg: { horaire: 45, fraisDeplacement: 0 },
+    valais_plaine: { horaire: 45, fraisDeplacement: 15 },
+    valais_station: { horaire: 49, fraisDeplacement: 45 },
   },
-  productosPorM2: {
-    apartamento: 0.5,
-    local: 0.8,
-    vitrina: 1,
-    cabinet: 1.5,
-    debarras: 1.2,
-  },
+  multiplicateursService: { fin_de_bail: 1.3, cabinet: 1.5, bureaux: 1, vitrines: 1.2 },
+  produitsParM2: { fin_de_bail: 1, cabinet: 1.8, bureaux: 0.6, vitrines: 0.8 },
 } as const
 
-const datosSchema = z.object({
-  tipoEspacio: z.enum(['apartamento', 'local', 'vitrina', 'cabinet', 'debarras']),
-  metrosCuadrados: z.number().positive(),
-  numeroVitrinas: z.number().nonnegative().optional(),
-  complejidadExtra: z.boolean(),
-})
+type Region = keyof typeof CONFIG_SUISSE_ROMANDE.tarifsParRegion
+type Service = keyof typeof CONFIG_SUISSE_ROMANDE.multiplicateursService
 
-const redondear = (valor: number) => Math.round(valor * 100) / 100
+function determinerRegionParNpa(value: string | number): Region {
+  const npa = Number.parseInt(String(value), 10)
+  if (npa >= 1200 && npa <= 1299) return 'geneve'
+  if (npa >= 1000 && npa <= 1199) return 'vaud'
+  if (npa >= 2000 && npa <= 2499) return 'neuchatel'
+  if ((npa >= 1470 && npa <= 1499) || (npa >= 1600 && npa <= 1799)) return 'fribourg'
+  if ([1936, 3962, 3963].includes(npa)) return 'valais_station'
+  if ((npa >= 1870 && npa <= 1999) || (npa >= 3900 && npa <= 3999)) return 'valais_plaine'
+  return 'vaud'
+}
+
+const arrondir = (value: number) => Math.round(value * 100) / 100
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const prompt = typeof body.prompt === 'string'
-      ? body.prompt.trim()
-      : typeof body.message === 'string'
-        ? body.message.trim()
-        : ''
-    const language = typeof body.language === 'string' ? body.language : 'FR'
+    const servicio = typeof body.servicio === 'string' ? body.servicio as Service : null
+    const metros = Number(body.metros)
+    const npa = String(body.npa ?? '').trim()
+    const complexiteExtra = body.complexiteExtra === true
 
-    if (prompt.length < 2) {
-      return Response.json({ text: 'Veuillez décrire votre besoin de nettoyage.', error: 'Prompt requis.' }, { status: 400 })
+    if (!servicio || !(servicio in CONFIG_SUISSE_ROMANDE.multiplicateursService) || !Number.isFinite(metros) || metros <= 0 || !/^\d{4}$/.test(npa)) {
+      return NextResponse.json({ success: false, error: 'Données de calcul ou NPA manquants.' }, { status: 400 })
     }
 
-    const { object: datosExtraidos } = await generateObject({
-      model: 'anthropic/claude-haiku-4.5',
-      schema: datosSchema,
-      system: `Extrae únicamente datos de una solicitud de limpieza suiza. Incluye débarras cuando corresponda como tipo de espacio, pero no inventes servicios de mudanza o transporte. Responde solo con los campos del esquema. Si falta una medida, estima de forma prudente. El resultado se usa para un presupuesto en CHF.`,
-      prompt: `Langue de réponse: ${language}. Demande: ${prompt}`,
-    })
+    const region = determinerRegionParNpa(npa)
+    const tarif = CONFIG_SUISSE_ROMANDE.tarifsParRegion[region]
+    const multiplicateur = CONFIG_SUISSE_ROMANDE.multiplicateursService[servicio] + (complexiteExtra ? 0.4 : 0)
+    const heuresTotalesTravail = Math.ceil((metros / CONFIG_SUISSE_ROMANDE.rendementM2ParHeure) * multiplicateur * 10) / 10
+    const personnelRecommande = heuresTotalesTravail > 10 ? 3 : heuresTotalesTravail > 4 ? 2 : 1
+    const heuresParPersonne = Math.ceil((heuresTotalesTravail / personnelRecommande) * 10) / 10
+    const mainOeuvre = heuresTotalesTravail * tarif.horaire
+    const produits = metros * CONFIG_SUISSE_ROMANDE.produitsParM2[servicio] + (complexiteExtra ? 40 : 0)
+    const sousTotalHT = mainOeuvre + produits + tarif.fraisDeplacement
+    const tva = sousTotalHT * CONFIG_SUISSE_ROMANDE.tva
+    const total = sousTotalHT + tva
 
-    const tipo = datosExtraidos.tipoEspacio
-    const metrosCalculados = datosExtraidos.metrosCuadrados + (datosExtraidos.numeroVitrinas ?? 0) * 3
-    let multiplicador = TARIFAS.multiplicadores[tipo]
-    if (datosExtraidos.complejidadExtra) multiplicador += 0.3
-
-    const horasTotalesTrabajo = Math.ceil((metrosCalculados / TARIFAS.rendimientoM2PorHora) * multiplicador * 10) / 10
-    const personalRecomendado = horasTotalesTrabajo > 12 ? 3 : horasTotalesTrabajo > 5 ? 2 : 1
-    const horasEstimadasPorPersona = Math.ceil((horasTotalesTrabajo / personalRecomendado) * 10) / 10
-    const manoObra = horasTotalesTrabajo * TARIFAS.precioHoraPersona
-    const productosYMateriales = metrosCalculados * TARIFAS.productosPorM2[tipo]
-    const subtotalHT = manoObra + productosYMateriales
-    const iva = subtotalHT * TARIFAS.iva
-    const totalTTC = subtotalHT + iva
-
-    return Response.json({
-      success: true,
-      moneda: 'CHF',
-      analisisIA: datosExtraidos,
-      desglose: {
-        metrosCalculados,
-        horasTotalesTrabajo,
-        organizacionEquipo: { personalRecomendado, horasEstimadasPorPersona },
-        costes: {
-          manoObra: redondear(manoObra),
-          productosYMateriales: redondear(productosYMateriales),
-          subtotalHT: redondear(subtotalHT),
-          iva: redondear(iva),
-          tasaIVA: '8.1%',
-          totalTTC: redondear(totalTTC),
-          totalPresupuesto: redondear(totalTTC),
-        },
-      },
-    })
-  } catch (error) {
-    console.error('[v0] Error calculando presupuesto CHF:', error)
-    return Response.json({ success: false, error: 'Impossible de calculer le devis pour le moment.' }, { status: 500 })
+    return NextResponse.json({ success: true, monnaie: 'CHF', region: region.toUpperCase().replace('_', ' '), desglose: { heuresTotalesTravail, personnelRecommande, heuresParPersonne, npaService: npa, couts: { mainOeuvre: arrondir(mainOeuvre), produitsEtMateriaux: arrondir(produits), fraisTransport: tarif.fraisDeplacement, sousTotalHT: arrondir(sousTotalHT), tva: arrondir(tva), tauxTVA: '8.1%', totalTTC: arrondir(total), totalPresupuesto: arrondir(total) } } })
+  } catch {
+    return NextResponse.json({ success: false, error: 'Impossible de calculer le devis pour le moment.' }, { status: 500 })
   }
 }
