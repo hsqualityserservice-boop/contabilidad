@@ -1,26 +1,51 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f8f6;
+  --foreground: #18221d;
+  --card: #ffffff;
+  --card-foreground: #18221d;
+  --primary: #1c5b43;
+  --primary-foreground: #f7fbf8;
+  --secondary: #e9f1eb;
+  --secondary-foreground: #1c5b43;
+  --muted: #eef1ed;
+  --muted-foreground: #6b766f;
+  --border: #dce4de;
+  --ring: #5b9b7d;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+* { border-color: var(--border); }
+body { background: var(--background); color: var(--foreground); font-family: Arial, Helvetica, sans-serif; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+::selection { background: #c8dfd0; color: #18221d; }
+
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  :root { --background: #101713; --foreground: #edf5ef; --card: #17231c; --card-foreground: #edf5ef; --secondary: #20372a; --secondary-foreground: #d8f0df; --muted: #1b2820; --muted-foreground: #9cad9f; --border: #2b3b31; }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+.text-balance { text-wrap: balance; }
+.text-pretty { text-wrap: pretty; }
+
+@media (max-width: 640px) { h1 { line-height: 1.08; } }
+
+@keyframes appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+main > div { animation: appear 500ms ease-out both; }
