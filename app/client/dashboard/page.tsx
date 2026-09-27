@@ -1,3 +1,7 @@
-import HSCleaningApp from '@/components/hs-cleaning-app'
+import ClientDashboard from '@/components/client-dashboard'
+
 export const metadata = { title: 'Espace client — hs-cleaning.ch' }
-export default function Page() { return <HSCleaningApp requiredRole="CLIENT" /> }
+
+export default function Page() {
+  return <ClientDashboard />
+}

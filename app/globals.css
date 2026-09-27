@@ -229,3 +229,23 @@
 @media (max-width: 980px) { .landing { grid-template-columns: 1fr; }.landing-visual { min-height: 340px; padding: 26px 28px; }.visual-copy { margin: 48px 0 30px; }.visual-copy h1 { font-size: clamp(2.8rem, 9vw, 4rem); }.visual-copy > p:not(.eyebrow), .trust-row, .visual-footer { display: none; }.auth-panel { min-height: 650px; }.mobile-brand { display: flex; align-items: center; justify-content: space-between; margin-bottom: 55px; }.landing-visual .visual-top { display: none; } }
 @media (max-width: 760px) { .sidebar { position: fixed; z-index: 10; left: -280px; transition: left .25s; }.sidebar.open { left: 0; box-shadow: 10px 0 30px rgba(18,37,56,.2); }.close-mobile, .menu-button { display: grid; place-items: center; padding: 5px; }.close-mobile { margin-left: auto; }.dashboard-header { padding: 20px; }.dashboard-content { padding: 27px 20px 50px; }.header-actions .language-switcher { display: none; }.dashboard-header h1 { font-size: 1.15rem; }.content-heading { align-items: flex-start; flex-direction: column; gap: 15px; }.stat-grid, .invoice-stats { grid-template-columns: 1fr; }.add-staff, .invoice-columns { grid-template-columns: 1fr; }.staff-row { grid-template-columns: 38px 1fr auto; }.staff-row .unique-code, .staff-row .icon-button { display: none; }.calendar { overflow-x: auto; }.calendar-head, .calendar-row { min-width: 720px; }.proof-grid { grid-template-columns: 1fr; }.planning-toolbar { align-items: flex-start; flex-direction: column; }.toolbar-actions { width: 100%; }.toolbar-actions .primary-button { width: auto; }.form-grid { grid-template-columns: 1fr; } }
 @media (max-width: 460px) { .landing-visual { min-height: 300px; }.auth-panel { padding: 28px 22px; }.mobile-brand { margin-bottom: 35px; }.auth-heading h2 { font-size: 1.75rem; }.invoice-paper { padding: 17px; } }
+
+.client-portal { min-height: 100vh; padding: 42px clamp(20px, 6vw, 88px) 72px; background: var(--muted); color: var(--foreground); }
+.portal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; max-width: 1240px; margin: 0 auto 34px; }
+.portal-header h1 { margin: 8px 0; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -.06em; }
+.portal-header p:last-child { margin: 0; color: var(--muted-foreground); }
+.client-grid { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(300px, .8fr); gap: 18px; }
+.calculator-panel, .client-side .panel { padding: 24px; }
+.calculator-panel { box-shadow: 0 18px 50px rgba(18,37,56,.08); }
+.calculator-panel h2, .client-side h2 { margin: 7px 0; font-size: 1.4rem; letter-spacing: -.04em; }
+.calculator-total { color: var(--primary); font-family: var(--font-mono); font-size: 1.2rem; white-space: nowrap; }
+.destination-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 26px 0 18px; }
+.destination-tabs button { border: 1px solid var(--border); border-radius: 8px; padding: 12px 8px; background: var(--card); color: var(--muted-foreground); font-size: .76rem; font-weight: 700; }
+.destination-tabs button.active { border-color: var(--primary); background: var(--secondary); color: var(--primary); }
+.field select, .field-control, .assistant-form input { width: 100%; box-sizing: border-box; border: 1px solid var(--input); border-radius: 7px; padding: 13px 14px; background: var(--card); color: var(--foreground); }
+.calculator-panel .extras-grid { grid-template-columns: repeat(3, 1fr); margin-top: 22px; }
+.calculator-breakdown { display: flex; flex-direction: column; gap: 10px; margin: 22px 0; padding: 17px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: .78rem; }
+.calculator-breakdown span { display: flex; justify-content: space-between; color: var(--muted-foreground); }.calculator-breakdown strong { color: var(--foreground); font-family: var(--font-mono); }
+.client-side { display: flex; flex-direction: column; gap: 18px; }.client-side .panel p:not(.eyebrow) { color: var(--muted-foreground); font-size: .8rem; line-height: 1.55; }.client-side small { display: block; margin-top: 8px; color: var(--muted-foreground); }.slot-card.active { border-color: var(--primary); background: var(--secondary); }.assistant-form { display: flex; flex-direction: column; gap: 9px; margin-top: 15px; }.assistant-form .primary-button { padding: 11px; }
+@media (max-width: 860px) { .client-grid { grid-template-columns: 1fr; } }.client-side .field-control { margin: 12px 0 2px; }
+@media (max-width: 560px) { .client-portal { padding: 26px 16px 48px; }.portal-header { flex-direction: column; }.calculator-panel .extras-grid, .destination-tabs { grid-template-columns: 1fr; }.calculator-panel, .client-side .panel { padding: 19px; } }
