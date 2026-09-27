@@ -8,9 +8,9 @@ import { authClient } from '@/lib/auth-client'
 import { LogIn, Sparkles } from 'lucide-react'
 
 const destinations = {
-  commercial: { label: { FR: 'Entreprises', ES: 'Empresas', EN: 'Business' }, items: [['Cliniques & Cabinets', 1.15], ['Boutiques / Magasins', 1], ['Restaurants', 1.2], ['Vitrines / Cristaux', .9]] },
-  residential: { label: { FR: 'Résidentiel', ES: 'Residencial', EN: 'Residential' }, items: [['Maisons', 1], ['Appartements', .92], ['Fin de Chantier', 1.55]] },
-  vehicles: { label: { FR: 'Véhicules', ES: 'Vehículos', EN: 'Vehicles' }, items: [['Nettoyage de voitures à l’intérieur', .72]] },
+  commercial: { label: { FR: 'Entreprises', ES: 'Empresas', EN: 'Business' }, items: [['Cliniques & Cabinets', 3.1], ['Boutiques / Magasins', 2.7], ['Restaurants', 3.4], ['Vitrines / Cristaux', 2.4]] },
+  residential: { label: { FR: 'Résidentiel', ES: 'Residencial', EN: 'Residential' }, items: [['Maisons', 2.6], ['Appartements', 2.35], ['Fin de Chantier', 4.1]] },
+  vehicles: { label: { FR: 'Véhicules', ES: 'Vehículos', EN: 'Vehicles' }, items: [['Nettoyage de voitures à l’intérieur', 95]] },
 } as const
 const extras = [['oven', { FR: 'Four', ES: 'Horno', EN: 'Oven' }, 45], ['fridge', { FR: 'Réfrigérateur', ES: 'Nevera', EN: 'Fridge' }, 35], ['windows', { FR: 'Cristaux', ES: 'Cristales', EN: 'Windows' }, 55], ['ironing', { FR: 'Repassage', ES: 'Planchado', EN: 'Ironing' }, 40]] as const
 const regions = [['Genève', 38, 0], ['Vaud', 42, 0], ['Neuchâtel', 40, 0], ['Valais — Sion', 48, 35], ['Valais — Verbier', 48, 35], ['Valais — Crans-Montana', 48, 35]] as const
@@ -38,9 +38,10 @@ export default function ClientDashboard() {
     const selectedRegion = regions.find(([label]) => label === region) ?? regions[0]
     const hourlyRate = selectedRegion[1]
     const transport = selectedRegion[2]
-    const servicePrice = hourlyRate * serviceMultiplier
-    const calculatedSubtotal = servicePrice + transport + selectedExtras.reduce((sum, key) => sum + (extras.find(([id]) => id === key)?.[2] ?? 0), 0)
-    const subtotal = destination === 'commercial' && service === 'Cliniques & Cabinets' && reservation.squareMeters === 80 ? 324 : calculatedSubtotal
+    const serviceRate = serviceMultiplier
+    const servicePrice = destination === 'vehicles' ? serviceRate : reservation.squareMeters * serviceRate
+    const extrasTotal = selectedExtras.reduce((sum, key) => sum + (extras.find(([id]) => id === key)?.[2] ?? 0), 0)
+    const subtotal = servicePrice + transport + extrasTotal
     return { subtotal, vat: subtotal * 0.081, total: subtotal * 1.081 }
   }, [destination, region, reservation.squareMeters, selectedExtras, service])
   const generateQuote = async () => {
@@ -69,9 +70,9 @@ export default function ClientDashboard() {
     <header className="portal-header"><div className="portal-brand"><img src="/hs-logo.png" alt="H&S Quality Service" /><div><strong>H&amp;S Quality Service</strong><span>{copy.greeting}, {name}</span></div></div><div className="header-actions"><select aria-label="Language" value={language} onChange={(event) => setLanguage(event.target.value as keyof typeof languages)}><option>FR</option><option>ES</option><option>EN</option></select><button className="login-icon" onClick={signOut} aria-label={copy.logout} title={copy.logout}><LogIn /></button></div></header>
     <div className="client-grid"><section className="panel calculator-panel"><div className="quote-code">HS2026</div><div className="panel-header"><div><p className="eyebrow">{copy.estimate}</p><h2>{copy.custom}</h2><p>{copy.tax}</p></div><strong className="calculator-total">CHF {total.total.toFixed(2)}</strong></div>
       <section className="writing-guide"><div className="guide-title"><Sparkles /> <strong>{language === 'ES' ? 'Guía de redacción profesional' : language === 'EN' ? 'Professional writing guide' : 'Guide de rédaction professionnelle'}</strong></div><p>{language === 'ES' ? 'Mantenimiento regular de comunidad de vecinos con [X] plantas en [Localidad]. Tareas: limpieza de pasillos, gestión de contenedores de basura y control de accesos.' : language === 'EN' ? 'Regular building maintenance with [X] floors in [Location]. Tasks: corridor cleaning, waste-bin management and access control.' : 'Entretien régulier d’immeuble avec [X] étages à [Localité]. Tâches : nettoyage des couloirs, gestion des poubelles et contrôle des accès.'}</p></section>
-      <section className="ai-estimate" aria-label="Analyse IA"><div><p className="eyebrow">Analyse IA</p><strong>{language === 'ES' ? 'Cabinet · 80 m² · 2 vitrinas' : language === 'EN' ? 'Office · 80 m² · 2 showcases' : 'Cabinet · 80 m² · 2 vitrines'}</strong><p>{language === 'ES' ? '2 personas · 3,9 h por persona · complejidad extra' : language === 'EN' ? '2 people · 3.9 h per person · extra complexity' : '2 personnes · 3,9 h par personne · complexité extra'}</p></div><strong className="ai-estimate-total">CHF 324.00</strong></section>
       <div className="destination-tabs">{Object.entries(destinations).map(([key, item]) => <button type="button" key={key} className={destination === key ? 'active' : ''} onClick={() => { const next = key as keyof typeof destinations; setDestination(next); setService(destinations[next].items[0][0]) }}>{item.label[language]}</button>)}</div>
       <label className="field"><span>{copy.service}</span><select value={service} onChange={(event) => setService(event.target.value)}>{destinations[destination].items.map(([label]) => <option key={label}>{label}</option>)}</select></label>
+      {destination !== 'vehicles' && <label className="field"><span>Surface (m²)</span><input type="number" min="1" max="10000" value={reservation.squareMeters} onChange={(event) => setReservation({ ...reservation, squareMeters: Math.max(1, Number(event.target.value) || 1) })} /></label>}
       <div className="customer-fields" aria-label={copy.billing}><label className="field"><span>{copy.name}</span><input value={customer.name} onChange={(event) => setCustomer({ ...customer, name: event.target.value })} placeholder={name} /></label><label className="field"><span>{copy.address}</span><input value={customer.address} onChange={(event) => setCustomer({ ...customer, address: event.target.value })} placeholder={language === 'FR' ? 'Rue, NPA, ville' : language === 'ES' ? 'Calle, código postal, ciudad' : 'Street, postal code, city'} /></label><label className="field"><span>{copy.vat}</span><input value={customer.vat} onChange={(event) => setCustomer({ ...customer, vat: event.target.value })} placeholder="CHE-123.456.789 TVA" /></label></div>
       <div className="extras-grid">{extras.map(([key, label, price]) => <label className="extra-option" key={key}><input type="checkbox" checked={selectedExtras.includes(key)} onChange={() => setSelectedExtras((current) => current.includes(key) ? current.filter((item) => item !== key) : [...current, key])} /><span>{label[language]}</span><small>+ CHF {price}.00</small></label>)}</div>
       <div className="calculator-breakdown"><span>Sous-total HT <strong>CHF {total.subtotal.toFixed(2)}</strong></span><span>TVA 8.1% <strong>CHF {total.vat.toFixed(2)}</strong></span><span>Total TTC <strong>CHF {total.total.toFixed(2)}</strong></span></div><button className="primary-button" onClick={generateQuote}>{copy.quote}</button>
