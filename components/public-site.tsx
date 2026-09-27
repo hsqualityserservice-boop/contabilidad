@@ -17,9 +17,9 @@ export default function PublicSite() {
   const t = copy[language]
 
   const portals = [
-    { label: t.client, detail: 'Genève · Vaud · Neuchâtel · Valais', icon: UserRound },
-    { label: t.staff, detail: 'Clock-In / Clock-Out · Photos terrain', icon: UsersRound },
-    { label: t.admin, detail: 'Personnel · Planning · Factures QR', icon: Building2 },
+    { label: t.client, detail: 'Genève · Vaud · Neuchâtel · Valais', icon: UserRound, href: '/sign-in?role=client' },
+    { label: t.staff, detail: 'Clock-In / Clock-Out · Photos terrain', icon: UsersRound, href: '/sign-in?role=staff' },
+    { label: t.admin, detail: 'Personnel · Planning · Factures QR', icon: Building2, href: '/sign-in?role=admin' },
   ]
 
   return (
@@ -46,8 +46,8 @@ export default function PublicSite() {
           <p>{t.regions}</p>
         </div>
         <div className="portal-grid">
-          {portals.map(({ label, detail, icon: Icon }) => (
-            <Link className="portal-card" href="/sign-in" key={label}>
+          {portals.map(({ label, detail, icon: Icon, href }) => (
+            <Link className="portal-card" href={href} key={label}>
               <span className="portal-icon"><Icon aria-hidden="true" /></span>
               <span className="portal-copy"><strong>{label}</strong><small>{detail}</small></span>
               <ArrowRight aria-hidden="true" />
