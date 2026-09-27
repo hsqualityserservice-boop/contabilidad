@@ -2,26 +2,36 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
-.public-site { min-height: 100vh; display: flex; flex-direction: column; background: var(--background); color: var(--foreground); }
-.public-header { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.5rem clamp(1.25rem, 5vw, 5rem); border-bottom: 1px solid var(--border); }
-.public-brand { display: flex; align-items: center; gap: .7rem; color: var(--primary); font-weight: 800; letter-spacing: .08em; text-decoration: none; }
-.public-brand img { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; }
-.public-brand span { display: block; color: var(--foreground); font-size: .65rem; letter-spacing: .14em; }
-.public-header nav, .public-languages { display: flex; align-items: center; gap: 1rem; }
-.public-header nav a { color: var(--foreground); text-decoration: none; font-size: .9rem; }
-.public-login, .public-cta { border-radius: 999px; background: var(--primary); color: var(--primary-foreground) !important; padding: .7rem 1rem; }
-.public-languages button { border: 0; background: transparent; color: var(--muted-foreground); cursor: pointer; }
-.public-languages button.active { color: var(--primary); font-weight: 700; }
-.public-hero { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 3rem; padding: clamp(4rem, 12vw, 9rem) clamp(1.25rem, 10vw, 10rem); background: linear-gradient(120deg, var(--background) 65%, var(--secondary)); }
-.public-hero > div { max-width: 52rem; }
-.public-hero h1 { max-width: 12ch; margin: 1rem 0; font-size: clamp(2.8rem, 7vw, 6rem); line-height: .98; letter-spacing: -.06em; }
-.public-lead { max-width: 42rem; color: var(--muted-foreground); font-size: 1.15rem; line-height: 1.6; margin-bottom: 2rem; }
-.public-cta { display: inline-block; text-decoration: none; }
-.public-trust { display: flex; flex-direction: column; gap: .5rem; min-width: 15rem; padding: 2rem; border: 1px solid var(--primary); border-radius: 1.25rem; background: var(--background); }
-.public-trust strong { color: var(--primary); font-size: 2rem; }
-.public-trust span { color: var(--muted-foreground); line-height: 1.5; }
-.public-footer { display: flex; justify-content: space-between; padding: 1.25rem clamp(1.25rem, 5vw, 5rem); color: var(--muted-foreground); font-size: .8rem; }
-@media (max-width: 760px) { .public-header { flex-wrap: wrap; } .public-header nav { order: 3; width: 100%; justify-content: space-between; } .public-hero { flex-direction: column; align-items: flex-start; } .public-footer { flex-direction: column; gap: .5rem; } }
+.access-screen { min-height: 100vh; display: flex; flex-direction: column; background: #fff; color: var(--foreground); }
+.access-header { display: flex; align-items: center; justify-content: space-between; padding: 28px clamp(24px, 7vw, 104px); border-bottom: 1px solid var(--border); }
+.access-brand { display: flex; align-items: center; gap: 12px; color: var(--foreground); font-size: .7rem; font-weight: 700; letter-spacing: .14em; line-height: 1.35; text-decoration: none; }
+.access-brand img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.access-brand strong { color: var(--primary); font-weight: 800; }
+.access-header-actions { display: flex; align-items: center; gap: 10px; color: var(--primary); }
+.access-header-actions > svg { width: 17px; }
+.access-languages { display: flex; gap: 3px; padding: 4px; border: 1px solid var(--border); border-radius: 999px; }
+.access-languages button { border: 0; border-radius: 999px; padding: 7px 10px; background: transparent; color: var(--muted-foreground); font-size: .68rem; font-weight: 800; }
+.access-languages button.active { background: var(--primary); color: #fff; }
+.access-content { display: flex; width: min(100% - 48px, 760px); flex: 1; flex-direction: column; justify-content: center; gap: 34px; margin: 0 auto; padding: 64px 0; }
+.access-intro { text-align: center; }
+.access-kicker { margin: 0 0 14px; color: var(--primary); font-family: var(--font-mono); font-size: .68rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.access-intro h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.25rem); letter-spacing: -.06em; }
+.access-intro p:last-child { margin: 12px 0 0; color: var(--muted-foreground); font-size: .9rem; }
+.portal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.portal-card { display: flex; min-height: 168px; flex-direction: column; justify-content: space-between; gap: 20px; padding: 20px; border: 1px solid var(--border); border-radius: 12px; color: var(--foreground); text-decoration: none; transition: border-color .2s, box-shadow .2s, transform .2s; }
+.portal-card:hover, .portal-card:focus-visible { border-color: var(--primary); box-shadow: 0 12px 28px rgba(242,92,50,.13); transform: translateY(-3px); }
+.portal-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 10px; background: var(--secondary); color: var(--primary); }
+.portal-icon svg { width: 21px; }
+.portal-copy { display: flex; flex-direction: column; gap: 8px; }
+.portal-copy strong { font-size: .94rem; }
+.portal-copy small { color: var(--muted-foreground); font-size: .7rem; line-height: 1.45; }
+.portal-card > svg { width: 17px; color: var(--primary); }
+.access-signup { display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: var(--primary); font-size: .82rem; font-weight: 800; text-decoration: none; }
+.access-signup svg { width: 15px; }
+.access-footer { display: flex; justify-content: space-between; gap: 16px; padding: 22px clamp(24px, 7vw, 104px); border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: .7rem; }
+.access-footer span:last-child { display: inline-flex; align-items: center; gap: 7px; }
+.access-footer svg { width: 15px; color: var(--primary); }
+@media (max-width: 760px) { .access-header { padding: 20px 24px; } .access-content { width: min(100% - 32px, 420px); padding: 44px 0; } .portal-grid { grid-template-columns: 1fr; } .portal-card { min-height: 0; flex-direction: row; align-items: center; } .portal-card > svg { margin-left: auto; } .access-footer { flex-direction: column; padding: 18px 24px; } }
 
 
 @custom-variant dark (&:is(.dark *));
