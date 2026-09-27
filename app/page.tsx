@@ -40,27 +40,12 @@ export default function NettoyageApp() {
       const response = await fetch('/api/assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: `Servicio: ${servicio}. Superficie: ${metros} m². NPA: ${npa}. Detalles: ${detalles || 'sin detalles adicionales'}`,
-        }),
+        body: JSON.stringify({ servicio, npa, metros: Number(metros), prompt: detalles }),
       })
       const data = await response.json()
       if (!response.ok || !data.success) throw new Error(data.error || 'No se pudo calcular el presupuesto.')
 
-      const subtotalHT = data.desglose.totalGeneral
-      const tvaCalculado = Math.round(subtotalHT * 0.081 * 100) / 100
-      setCotizacion({
-        horasTotalesTrabajo: data.desglose.limpieza.horasTotales,
-        personalRecomendado: data.desglose.limpieza.operariosRecomendados,
-        horasPorPersona: data.desglose.limpieza.horasPorPersona,
-        costes: {
-          manoObra: data.desglose.limpieza.costeManoObra,
-          productosYMateriales: data.desglose.limpieza.costeProductos,
-          subtotalHT,
-          tvaCalculado,
-          totalPresupuestoCHF: Math.round((subtotalHT + tvaCalculado) * 100) / 100,
-        },
-      })
+      setCotizacion(data.desglose)
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'No se pudo calcular el presupuesto.')
     } finally {
