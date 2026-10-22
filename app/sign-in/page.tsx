@@ -1,13 +1,17 @@
-import HSCleaningApp from '@/components/hs-cleaning-app'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { AuthForm } from '@/components/auth-form'
+import { auth } from '@/lib/auth'
 
-export const metadata = { title: 'Connexion — hs-cleaning.ch' }
+type SignInPageProps = {
+  searchParams: Promise<{ recovery?: string }>
+}
 
-type Role = 'ADMIN' | 'STAFF' | 'CLIENT'
-
-export default async function SignInPage({ searchParams }: { searchParams: Promise<{ role?: string }> }) {
-  const params = await searchParams
-  const role = params.role?.toLowerCase()
-  const requiredRole: Role | undefined = role === 'admin' ? 'ADMIN' : role === 'staff' ? 'STAFF' : role === 'client' ? 'CLIENT' : undefined
-
-  return <HSCleaningApp requiredRole={requiredRole} />
+export default async function SignInPage({ searchParams }: SignInPageProps) {
+  const [session, params] = await Promise.all([
+    auth.api.getSession({ headers: await headers() }),
+    searchParams,
+  ])
+  if (session?.user) redirect('/account')
+  return <AuthForm mode="sign-in" initialRecovery={params.recovery === '1'} />
 }
