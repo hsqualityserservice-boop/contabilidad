@@ -757,7 +757,16 @@ td strong { color: var(--foreground); font-size: 10px; font-weight: 600; }
 .public-home-aside-mark img { border-radius: 50%; object-fit: contain; }
 .public-home-aside .auth-eyebrow { margin-bottom: 7px; }
 .public-home-aside h2 { margin: 0; font-size: 23px; letter-spacing: -.5px; }
-.public-home-aside > p:not(.auth-eyebrow) { margin: 8px 0 22px; color: var(--muted-foreground); font-size: 12px; line-height: 1.55; }
+ .public-home-aside > p:not(.auth-eyebrow) { margin: 8px 0 22px; color: var(--muted-foreground); font-size: 12px; line-height: 1.55; }
+ .public-home-portals { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+ .public-home-portal { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--foreground); text-decoration: none; transition: border-color .2s, transform .2s; }
+ .public-home-portal:hover, .public-home-portal:focus-visible { border-color: var(--primary); transform: translateX(2px); }
+ .public-home-portal > svg:first-child { width: 17px; height: 17px; color: var(--primary); flex: 0 0 17px; }
+ .public-home-portal > svg:last-child { width: 14px; height: 14px; margin-left: auto; color: var(--muted-foreground); }
+ .public-home-portal span { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+ .public-home-portal strong { font-size: 12px; font-weight: 700; }
+ .public-home-portal small { color: var(--muted-foreground); font-size: 10px; line-height: 1.35; }
+
 .public-home-location { padding-top: 12px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 10px; }
 .public-home-paths { width: min(100%, 1080px); margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .public-home-paths article { min-height: 126px; padding: 18px; border: 1px solid var(--border); border-radius: 9px; background: var(--card); }
