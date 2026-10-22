@@ -1,2 +1,5 @@
-allowBuilds:
-  core-js: true
+pmOnFail: ignore
+
+minimumReleaseAgeExclude:
+  - '@next/*'
+  - next
