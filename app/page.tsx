@@ -1,7 +1,7 @@
 import LandingPublic from '@/components/landing-public'
 
 export const metadata = {
-  title: 'Nettoyage professionnel à Genève | H&S Quality Service — Devis immédiat',
+  title: 'Nettoyage professionnel à Genève | H&S Quality Service',
   description:
     'Entreprise de nettoyage à Genève : fin de bail garantie, bureaux, cabinets médicaux, vitrines et Airbnb. Devis immédiat en ligne. Assurance RC CHF 5M. Suisse romande.',
   openGraph: {
